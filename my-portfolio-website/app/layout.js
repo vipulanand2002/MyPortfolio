@@ -3,6 +3,8 @@ export const metadata = {
   description: 'Showcasing my certifications, projects, and resume.',
 };
 
+import "./globals.css";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">

@@ -19,3 +19,7 @@ body {
     margin-top: 2rem;
     text-align: center;
   }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
