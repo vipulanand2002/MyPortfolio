@@ -7,6 +7,7 @@ This is my **personal portfolio website** built using **Next.js** and **Tailwind
 - 💼 **Experience**: Showcases my professional journey.
 - 🎓 **Certifications**: Highlights my achievements.
 - 🎓 **Education**: Lists my academic qualifications.
+- ⌛ **Timeline**: Shows Timeline of my Education and Work Experience.
 - 📞 **Contact Me**: A form to reach out to me.
 - 🌐 **Fully Responsive**: Optimized for all screen sizes.
 
