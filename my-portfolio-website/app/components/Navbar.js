@@ -22,6 +22,11 @@ export default function Navbar() {
             </Link>
           </li>
           <li>
+            <Link href="/timeline" className="hover:text-gray-200">
+              Timeline
+            </Link>
+          </li>
+          <li>
             <Link href="/projects" className="hover:text-gray-200">
               Projects
             </Link>
@@ -36,6 +41,7 @@ export default function Navbar() {
               Contact Me
             </Link>
           </li>
+          
         </ul>
       </div>
     </nav>
