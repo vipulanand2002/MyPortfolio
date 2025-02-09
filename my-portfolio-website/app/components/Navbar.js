@@ -12,6 +12,11 @@ export default function Navbar() {
             </Link>
           </li>
           <li>
+            <Link href="/aboutMe" className="hover:text-gray-200">
+              About Me
+            </Link>
+          </li>
+          <li>
             <Link href="/experience" className="hover:text-gray-200">
               Experience
             </Link>
@@ -27,13 +32,8 @@ export default function Navbar() {
             </Link>
           </li>
           <li>
-            <Link href="/aboutMe" className="hover:text-gray-200">
-              Contact Me
-            </Link>
-          </li>
-          <li>
             <Link href="/contactMe" className="hover:text-gray-200">
-              About Me
+              Contact Me
             </Link>
           </li>
         </ul>
