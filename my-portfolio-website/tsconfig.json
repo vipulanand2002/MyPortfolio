@@ -32,6 +32,6 @@
     "app/components/Header.js",
     "app/components/**/*.{js,jsx,ts,tsx}",
     "components/**/*.{js,jsx,ts,tsx}"
-  ],
+, "app/timeline/page.js"  ],
   "exclude": ["node_modules"]
 }
