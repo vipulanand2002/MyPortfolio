@@ -71,7 +71,7 @@ export default function CertificationsPage() {
         A list of certifications I have completed.
       </p>
 
-      <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-2 gap-6">
+      <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {certifications.map((cert) => (
           <div
             key={cert.id}
@@ -104,14 +104,6 @@ export default function CertificationsPage() {
 
             {/* Buttons at Bottom */}
             <div className="mt-auto pt-4 flex space-x-3">
-              {/* Download Button */}
-              <a
-                href={cert.pdfUrl}
-                download
-                className="bg-green-600 text-white px-4 py-2 rounded-lg transition-transform hover:scale-110 hover:bg-green-500 w-full text-center"
-              >
-                Download
-              </a>
 
               {/* External Link (Optional) */}
               {cert.externalLink && (
