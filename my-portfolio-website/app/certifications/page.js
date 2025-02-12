@@ -1,61 +1,62 @@
 "use client";
 
 import { useState } from "react";
-import { FiEye } from "react-icons/fi"; // Eye Icon
+import { FiEye } from "react-icons/fi";
+import { motion } from "framer-motion";
 
 const certifications = [
   {
     id: 1,
     name: "Introduction to Data Analytics",
     issuer: "IBM - Coursera",
-    date: "March 2023",
+    date: "June 2024",
     pdfUrl: "/certifications/Data Analytics.pdf",
-    courseLink: "",
-    externalLink: "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+    verifyLink: "https://www.coursera.org/account/accomplishments/verify/Q699SLAYCNY7",
+    externalLink: "https://www.coursera.org/learn/introduction-to-data-analytics",
   },
   {
     id: 2,
     name: "Principles of UX/UI Design",
     issuer: "Meta - Coursera",
-    date: "July 2022",
+    date: "November 2023",
     pdfUrl: "/certifications/Coursera Principles of UI UX.pdf",
-    courseLink: "",
-    externalLink: "https://cloud.google.com/certification/cloud-architect",
+    verifyLink: "https://www.coursera.org/account/accomplishments/verify/4W2Q6NBEE34D",
+    externalLink: "https://www.coursera.org/learn/principles-of-ux-ui-design",
   },
   {
     id: 3,
     name: "Create the User Interface in Android Studio",
     issuer: "Meta - Coursera",
-    date: "January 2021",
+    date: "August 2023",
     pdfUrl: "/certifications/User Interface in Android Studio.pdf",
-    courseLink: "",
-    externalLink: "https://learn.microsoft.com/en-us/certifications/azure-fundamentals/",
+    verifyLink: "https://www.coursera.org/account/accomplishments/verify/D8GZ4T4G25MY",
+    externalLink: "https://www.coursera.org/learn/create-the-user-interface-android-studio",
   },
   {
     id: 4,
     name: "Programming Fundamentals in Kotlin",
     issuer: "Meta - Coursera",
-    date: "January 2021",
+    date: "June 2023",
     pdfUrl: "/certifications/Kotlin Fundamentals.pdf",
-    courseLink: "",
-    externalLink: "https://learn.microsoft.com/en-us/certifications/azure-fundamentals/",
+    verifyLink: "https://www.coursera.org/account/accomplishments/verify/EDVMB5ZB8XAK",
+    externalLink: "https://www.coursera.org/learn/meta-programming-fundamentals-kotlin",
   },
   {
     id: 5,
     name: "Version Control",
     issuer: "Meta - Coursera",
-    date: "January 2021",
+    date: "April 2023",
     pdfUrl: "/certifications/Version Control.pdf",
-    courseLink: "",
-    externalLink: "https://learn.microsoft.com/en-us/certifications/azure-fundamentals/",
+    verifyLink: "https://www.coursera.org/account/accomplishments/verify/P7A6Y4Q8ZF4X",
+    externalLink: "https://www.coursera.org/learn/introduction-to-version-control",
   },
   {
     id: 6,
     name: "Introduction to Android Mobile Application Development",
     issuer: "Meta - Coursera",
-    date: "January 2021",
+    date: "February 2023",
     pdfUrl: "/certifications/Introduction to Mobile app development.pdf",
-    courseLink: "https://www.coursera.org/account/accomplishments/verify/4947DWPATKGD",
+    verifyLink: "https://www.coursera.org/account/accomplishments/verify/4947DWPATKGD",
     externalLink: "https://www.coursera.org/learn/introduction-to-android-mobile-application-development",
   },
 ];
@@ -65,7 +66,12 @@ export default function CertificationsPage() {
   const [hovered, setHovered] = useState(null);
 
   return (
-    <section className="container mx-auto p-6">
+    <motion.section 
+      className="container mx-auto p-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
       <h1 className="text-3xl font-bold text-blue-600 text-center">Certifications</h1>
       <p className="mt-4 text-lg text-gray-700 text-center">
         A list of certifications I have completed.
@@ -106,9 +112,9 @@ export default function CertificationsPage() {
             <div className="mt-auto pt-4 flex space-x-3">
 
               {/* External Link (Optional) */}
-              {cert.externalLink && (
+              {cert.verifyLink && (
                 <a
-                  href={cert.courseLink}
+                  href={cert.verifyLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-gray-600 text-white px-4 py-2 rounded-lg transition-transform hover:scale-110 hover:bg-gray-500 w-full text-center"
@@ -157,6 +163,6 @@ export default function CertificationsPage() {
           </div>
         </div>
       )}
-    </section>
+    </motion.section>
   );
 }
