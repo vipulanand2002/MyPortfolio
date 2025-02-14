@@ -11,7 +11,7 @@ export async function POST(req) {
         "api-key": sendinblueApiKey,
       },
       body: JSON.stringify({
-        sender: { email: "ishasinghal2002@gmail.com", name: "College ID" },
+        sender: { email: "ishasinghal2002@gmail.com", name: "Isha" },
         to: [{ email: "karnvipul2002@gmail.com", name: "Vipul's ID" }],
         subject: `New Contact Request from ${name}`,
         htmlContent: `
