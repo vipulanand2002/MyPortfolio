@@ -1,30 +1,130 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const experiences = [
   {
     id: 1,
     title: "Harvard University",
     duration: "2008 - 2011",
-    description: "A description of all the lectures and courses I have taken and my final degree.",
+    description: [
+      "Completed Bachelor's in Computer Science.",
+      "Studied core subjects like Data Structures, Algorithms, and Machine Learning.",
+      "Participated in research projects on AI and Blockchain.",
+      "Graduated with honors."
+    ],
+    icon: "🎓",
+    skills: ["Research", "Academic Writing", "Critical Thinking"]
   },
   {
     id: 2,
     title: "Apple Inc.",
     duration: "2011 - 2013",
-    description: "My first employer. All the stuff I've learned and projects I've been working on.",
+    description: [
+      "Worked as an iOS Developer in the core UI team.",
+      "Developed features for iOS apps, enhancing user experience.",
+      "Collaborated with designers and backend engineers.",
+      "Optimized app performance, reducing load times by 30%."
+    ],
+    icon: "🍎",
+    skills: ["iOS Development", "UI Design", "Team Collaboration"]
   },
   {
     id: 3,
     title: "Freelancer",
     duration: "2013 - present",
-    description: "My current employment. Way better than the position before!",
+    description: [
+      "Built custom web applications for various clients.",
+      "Managed end-to-end project development from planning to deployment.",
+      "Specialized in full-stack development using React.js and Node.js.",
+      "Handled client communication and project management efficiently."
+    ],
+    icon: "💼",
+    skills: ["Project Management", "Client Relations", "Full-Stack Development"]
   },
 ];
 
+const DescriptionCard = ({ description, isVisible }) => {
+  const descriptionRef = useRef(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  useEffect(() => {
+    if (descriptionRef.current) {
+      const { scrollHeight, clientHeight } = descriptionRef.current;
+      setIsOverflowing(scrollHeight > clientHeight);
+    }
+  }, [isVisible]);
+
+  const handleScroll = (e) => {
+    if (descriptionRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = descriptionRef.current;
+      setScrollPosition(scrollTop / (scrollHeight - clientHeight));
+    }
+  };
+
+  return (
+    <motion.div
+      className="absolute inset-0 bg-white p-6 flex flex-col"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      transition={{ duration: 0.2 }}
+    >
+      <div 
+        ref={descriptionRef}
+        className="overflow-y-auto pr-2 max-h-[280px] md:max-h-[320px] scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent"
+        onScroll={handleScroll}
+      >
+        <ul className="list-none space-y-3">
+          {description.map((point, index) => (
+            <motion.li 
+              key={index}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+              className="flex items-start space-x-2 text-gray-700"
+            >
+              <span className="text-blue-500 mt-1">•</span>
+              <span>{point}</span>
+            </motion.li>
+          ))}
+        </ul>
+      </div>
+      
+      {isOverflowing && (
+        <motion.div 
+          className="h-1 bg-blue-100 mt-4 rounded-full overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <motion.div 
+            className="h-full bg-blue-500 rounded-full"
+            style={{ width: `${scrollPosition * 100}%` }}
+            transition={{ duration: 0.1 }}
+          />
+        </motion.div>
+      )}
+    </motion.div>
+  );
+};
+
 export default function ExperiencePage() {
   const [isVisible, setIsVisible] = useState({});
+  const [hoveredId, setHoveredId] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -38,7 +138,10 @@ export default function ExperiencePage() {
           }
         });
       },
-      { threshold: 0.3 }
+      { 
+        threshold: 0.1,
+        rootMargin: '0px 0px -10% 0px'
+      }
     );
 
     const elements = document.querySelectorAll('.timeline-item');
@@ -48,62 +151,120 @@ export default function ExperiencePage() {
   }, []);
 
   return (
-    <section className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold text-blue-600 text-center animate-fade-in motion-safe:animate-[fadeIn_1s_ease-in]">
-        Experience
-      </h1>
-      <p className="mt-4 text-lg text-gray-700 text-center motion-safe:animate-[fadeIn_1s_ease-in]">
-        A timeline of my professional journey.
-      </p>
+    <motion.section 
+      className="container mx-auto p-4 md:p-6 min-h-screen"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+    >
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="text-center mb-8 md:mb-16"
+      >
+        <h1 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4">
+          Experience
+        </h1>
+        <p className="text-base md:text-lg text-gray-700">
+          A timeline of my professional journey
+        </p>
+      </motion.div>
 
-      <div className="relative mt-10">
-        {/* Vertical Line */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-gradient-to-b from-transparent via-blue-200 to-transparent" />
+      <div className="relative">
+        <motion.div 
+          className={`absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-1 h-full`}
+          initial={{ height: 0 }}
+          animate={{ height: "100%" }}
+          transition={{ duration: 1, delay: 0.5 }}
+        >
+          <div className="h-full bg-gradient-to-b from-blue-200 via-blue-400 to-blue-200 rounded-full" />
+        </motion.div>
 
         {experiences.map((exp, index) => (
-          <div 
+          <motion.div 
             key={exp.id}
             data-id={exp.id}
-            className={`timeline-item mb-16 relative opacity-0 transition-all duration-700 ease-out
+            className={`timeline-item mb-8 md:mb-20 relative opacity-0 transition-all duration-700 ease-out
               ${isVisible[exp.id] ? 'opacity-100 translate-y-0' : 'translate-y-16'}
             `}
-            style={{
-              transitionDelay: `${index * 200}ms`
-            }}
+            style={{ transitionDelay: `${index * 200}ms` }}
           >
-            <div 
-              className={`flex items-center justify-between gap-8 ${
-                index % 2 === 0 ? "flex-row" : "flex-row-reverse"
-              }`}
-            >
-              {/* Content Box */}
-              <div className="w-5/12">
-                <div className="bg-white p-6 rounded-lg shadow-md 
-                  transition-all duration-300 ease-in-out
-                  hover:shadow-lg hover:-translate-y-1 hover:scale-105
-                  group">
-                  <h2 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
-                    {exp.title}
-                  </h2>
-                  <p className="text-sm text-gray-500 mt-1">{exp.duration}</p>
-                  <p className="mt-2 text-gray-700">{exp.description}</p>
-                </div>
-              </div>
+            <div className={`
+              flex 
+              ${isMobile ? 'ml-8' : `items-center justify-between gap-8 ${index % 2 === 0 ? "flex-row" : "flex-row-reverse"}`}
+            `}>
+              <motion.div 
+                className={`${isMobile ? 'w-full' : 'w-5/12'} relative`}
+                onHoverStart={() => !isMobile && setHoveredId(exp.id)}
+                onHoverEnd={() => !isMobile && setHoveredId(null)}
+                onClick={() => isMobile && setHoveredId(hoveredId === exp.id ? null : exp.id)}
+              >
+                <motion.div
+                  className="bg-white rounded-lg shadow-lg overflow-hidden"
+                  whileHover={!isMobile ? { scale: 1.02 } : {}}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="p-4 md:p-6">
+                    <motion.div
+                      animate={{
+                        opacity: hoveredId === exp.id ? 0 : 1,
+                        y: hoveredId === exp.id ? -20 : 0,
+                      }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xl md:text-2xl">{exp.icon}</span>
+                        <h2 className="text-lg md:text-xl font-semibold text-gray-900">
+                          {exp.title}
+                        </h2>
+                      </div>
+                      <p className="text-sm text-blue-600 mt-1">{exp.duration}</p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {exp.skills.map((skill, i) => (
+                          <span 
+                            key={i}
+                            className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-full"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </motion.div>
+
+                    <AnimatePresence>
+                      {hoveredId === exp.id && (
+                        <DescriptionCard 
+                          description={exp.description} 
+                          isVisible={hoveredId === exp.id}
+                        />
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </motion.div>
+              </motion.div>
 
               {/* Center Point */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center">
-                <div className="w-4 h-4 rounded-full bg-blue-600 border-4 border-blue-200
-                  transition-all duration-300 ease-in-out
-                  hover:scale-150 hover:rotate-180 hover:bg-blue-700
-                  cursor-pointer" />
-              </div>
+              <motion.div 
+                className={`absolute ${isMobile ? 'left-2' : 'left-1/2 transform -translate-x-1/2'}`}
+                whileHover={{ scale: 1.5 }}
+                transition={{ duration: 0.2 }}
+              >
+                <motion.div
+                  className="w-4 h-4 rounded-full bg-blue-600 border-4 border-blue-200 cursor-pointer"
+                  animate={{
+                    rotate: hoveredId === exp.id ? 180 : 0,
+                    backgroundColor: hoveredId === exp.id ? "#1d4ed8" : "#2563eb"
+                  }}
+                  transition={{ duration: 0.3 }}
+                />
+              </motion.div>
 
-              {/* Empty space for the other side */}
-              <div className="w-5/12" />
+              {!isMobile && <div className="w-5/12" />}
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 }
