@@ -64,81 +64,63 @@ const sections = [
     hasSubsections: true
   },
   {
-    title: "🎨 My Hobbies",
+    title: "💼 My Experience",
     content: [
-      "Coding & Open Source Contributions",
-      "Reading Tech Blogs",
-      "Sketching & Digital Art",
-      "Playing Chess",
-      "Exploring new Web Technologies",
+      {
+        title: "Analyst  - TresVista Financial Services Pvt. Ltd (Bengaluru, Karnataka)",
+        period: "Jan 2023 - Present",
+        details: [
+          "Built custom web applications for various clients",
+          "Worked on Several POCs for organization including",
+          "CSR contribution in form of Open Source Contributions",
+          "Worked as in assisting python automation for clients in one of the projects",
+          "Handled client communication and project management efficiently"
+        ]
+      }
     ],
+    hasSubsections: true
   },
   {
     title: "📚 My Education",
     content: [
       {
-        title: "B.Tech in Computer Science - XYZ University",
-        period: "2019 - 2023",
+        title: "B.Tech in Computer Science - Vellore Institute of Technology (Bhopal Campus)",
+        period: "2020 - 2024",
         details: [
-          "GPA: 3.8/4.0",
-          "Major in Artificial Intelligence",
-          "Key courses: Data Structures, Algorithms, Machine Learning"
+          "GPA: 8.41/10.0",
+          "Member of BIT by BIT (Technical Club) and VIT Bhopal",
+          "Attended Several Cloud and Android Workshops",
         ]
       },
       {
-        title: "Certified React Developer",
-        period: "2022",
+        title: "XII - CBSE Board - Assisi Convent Senior Secondary School (Noida, UP)",
+        period: "2019 - 2020",
         details: [
-          "Advanced React Patterns",
-          "State Management",
-          "Performance Optimization"
+          "PCM Stream - 75% marks in CBSE Board Exams",
+          "School Captain for 2 years (2018 - 2020)"
         ]
       },
       {
-        title: "Full-Stack Web Development Bootcamp",
-        period: "2021",
+        title: "X - CBSE Board - Assisi Convent Senior Secondary School (Noida, UP)",
+        period: "2017 - 2018",
         details: [
-          "MERN Stack Development",
-          "Cloud Deployment",
-          "API Design"
+          "86% marks in CBSE Board Exams",
+          "Participated in various Tech Olympiads"
         ]
       }
     ],
     hasSubsections: true
   },
   {
-    title: "💼 My Experience",
+    title: "🎨 My Hobbies",
     content: [
-      {
-        title: "Frontend Developer Intern - ABC Corp",
-        period: "Jan 2023 - Present",
-        details: [
-          "Led development of 3 major features using Next.js",
-          "Reduced loading time by 40% through optimization",
-          "Implemented CI/CD pipeline using GitHub Actions"
-        ]
-      },
-      {
-        title: "Open Source Contributor",
-        period: "2022 - Present",
-        details: [
-          "Contributed to React-based open source projects",
-          "Fixed 5+ critical bugs in popular libraries",
-          "Created documentation for newcomers"
-        ]
-      },
-      {
-        title: "Freelance Web Developer",
-        period: "2021 - 2022",
-        details: [
-          "Built custom websites for 10+ clients",
-          "Developed e-commerce solutions",
-          "Implemented responsive designs"
-        ]
-      }
+      "Learning Tech Stacks",
+      "Reading Tech Blogs",
+      "Watching Informative videos related to Tech",
+      "Studying new courses",
+      "Travelling & Singing",
     ],
-    hasSubsections: true
-  },
+  }
 ];
 
 const containerVariants = {
@@ -149,6 +131,7 @@ const containerVariants = {
       staggerChildren: 0.2,
     },
   },
+  
 };
 
 const cardVariants = {

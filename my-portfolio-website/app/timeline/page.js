@@ -6,42 +6,43 @@ import { motion, AnimatePresence } from "framer-motion";
 const experiences = [
   {
     id: 1,
-    title: "Harvard University",
-    duration: "2008 - 2011",
+    title: "Assisi Convent Senior Secondary School (Sector 33 - Noida, UP)",
+    duration: "2007 - 2020",
     description: [
-      "Completed Bachelor's in Computer Science.",
-      "Studied core subjects like Data Structures, Algorithms, and Machine Learning.",
-      "Participated in research projects on AI and Blockchain.",
-      "Graduated with honors."
+      "Class 12th (PCM stream) - 75% marks in CBSE Board Exams.",
+      "Class 10th - 86% marks in CBSE Board Exams.",
+      "School Captain for 2 years (2018 - 2020)",
+      ""
     ],
     icon: "🎓",
-    skills: ["Research", "Academic Writing", "Critical Thinking"]
+    skills: []
   },
   {
     id: 2,
-    title: "Apple Inc.",
-    duration: "2011 - 2013",
+    title: "Vellore Institute of Technology (Bhopal Campus, MP)",
+    duration: "2020 - 2024",
     description: [
-      "Worked as an iOS Developer in the core UI team.",
-      "Developed features for iOS apps, enhancing user experience.",
-      "Collaborated with designers and backend engineers.",
-      "Optimized app performance, reducing load times by 30%."
+      "Pursued B.Tech in Computer Science and Engineering.",
+      "Member of BIT by BIT (Technical Club) and VIT Bhopal.",
+      "Attended Several Cloud and Android Workshops.",
+      "Completed an Externship from SmartInternz in Android Development.",
     ],
-    icon: "🍎",
-    skills: ["iOS Development", "UI Design", "Team Collaboration"]
+    icon: "🎓",
+    skills: []
   },
   {
     id: 3,
-    title: "Freelancer",
-    duration: "2013 - present",
+    title: "TresVista Financial Services Pvt. Ltd. (Bengaluru, Karnataka)",
+    duration: "2024 - present",
     description: [
       "Built custom web applications for various clients.",
-      "Managed end-to-end project development from planning to deployment.",
-      "Specialized in full-stack development using React.js and Node.js.",
+      "Worked on Several POCs for organization including.",
+      "CSR contribution in form of Open Source Contributions.",
+      "Worked as in assisting python automation for clients in one of the projects.",
       "Handled client communication and project management efficiently."
     ],
     icon: "💼",
-    skills: ["Project Management", "Client Relations", "Full-Stack Development"]
+    skills: ["Project Management", "Client Relations", "Front-End Development", "Data Visualization"]
   },
 ];
 
@@ -247,7 +248,7 @@ export default function ExperiencePage() {
               {/* Center Point */}
               <motion.div 
                 className={`absolute ${isMobile ? 'left-2' : 'left-1/2 transform -translate-x-1/2'}`}
-                whileHover={{ scale: 1.5 }}
+               
                 transition={{ duration: 0.2 }}
               >
                 <motion.div
