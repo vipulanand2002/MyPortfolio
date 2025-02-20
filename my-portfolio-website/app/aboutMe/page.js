@@ -78,7 +78,7 @@ const sections = [
         ]
       }
     ],
-    hasSubsections: false
+    hasSubsections: true
   },
   {
     title: "📚 My Education",
