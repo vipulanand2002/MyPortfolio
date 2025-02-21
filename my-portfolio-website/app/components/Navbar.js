@@ -18,7 +18,7 @@ export default function Navbar() {
           </li>
           <li>
             <Link href="/experience" className="hover:text-gray-200">
-              Experience
+              Experiences
             </Link>
           </li>
           <li>
