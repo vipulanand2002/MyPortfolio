@@ -17,11 +17,6 @@ export default function Navbar() {
             </Link>
           </li>
           <li>
-            <Link href="/experience" className="hover:text-gray-200">
-              Experiences
-            </Link>
-          </li>
-          <li>
             <Link href="/timeline" className="hover:text-gray-200">
               Timeline
             </Link>
