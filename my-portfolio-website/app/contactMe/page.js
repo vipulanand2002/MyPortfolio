@@ -45,9 +45,15 @@ export default function ContactMe() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="text-center mb-8 md:mb-16"
+      >
       <h1 className="text-3xl font-bold text-blue-600">Contact Me</h1>
       <p className="mt-4 text-lg text-gray-700">Feel free to reach out!</p>
-
+    </motion.div>
       {/* Social Links */}
       <div className="mt-6 flex justify-center space-x-6">
         <a href="https://linkedin.com/in/your-profile" target="_blank" rel="noopener noreferrer" className="text-blue-600 text-2xl hover:scale-110 transition">

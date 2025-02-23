@@ -72,11 +72,17 @@ export default function CertificationsPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="text-center mb-8 md:mb-16"
+      >
       <h1 className="text-3xl font-bold text-blue-600 text-center">Certifications</h1>
       <p className="mt-4 text-lg text-gray-700 text-center">
         A list of certifications I have completed.
       </p>
-
+    </motion.div>
       <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {certifications.map((cert) => (
           <div
