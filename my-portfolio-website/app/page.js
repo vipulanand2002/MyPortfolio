@@ -4,13 +4,14 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import { MessageCircle, X, Send } from 'lucide-react';
+import { MessageCircle, X, Send, Linkedin, Github } from 'lucide-react';
 
 export default function HomePage() {
   const [chatVisible, setChatVisible] = useState(false);
   const [chatStep, setChatStep] = useState(0);
   const [userData, setUserData] = useState({ name: "", email: "", message: "" });
   const [messages, setMessages] = useState([{ sender: "bot", text: "Hello there! Please enter your name to proceed further." }]);
+  const [message, setMessage] = useState("");
   const chatBoxRef = useRef(null);
 
   useEffect(() => {
@@ -23,6 +24,7 @@ export default function HomePage() {
     if (!input.trim()) return;
 
     setMessages([...messages, { sender: "user", text: input }]);
+    setMessage("");
 
     setTimeout(() => {
       let nextMessage = "";
@@ -53,6 +55,25 @@ export default function HomePage() {
     }
   };
 
+  const socialIconVariants = {
+    hover: {
+      scale: 1.2,
+      rotate: [0, 10, -10, 0],
+      transition: { 
+        duration: 0.5,
+        type: "spring", 
+        stiffness: 300
+      }
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Prevents new line on Enter
+      handleUserInput(message);
+    }
+  };
+
   return (
     <section className="container mx-auto p-4 mt-10">
       {/* Hero Section */}
@@ -73,6 +94,30 @@ export default function HomePage() {
             <Link href="/contactMe" className="bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-gray-700">
               Contact Me
             </Link>
+          </div>
+          
+          {/* Added Social Media Icons */}
+          <div className="mt-6 flex space-x-6 justify-center md:justify-start">
+            <motion.a 
+              href="https://linkedin.com/in/anandvipul2002" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800"
+              variants={socialIconVariants}
+              whileHover="hover"
+            >
+              <Linkedin size={32} />
+            </motion.a>
+            <motion.a 
+              href="https://github.com/vipulanand2002" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-800 hover:text-gray-900"
+              variants={socialIconVariants}
+              whileHover="hover"
+            >
+              <Github size={32} />
+            </motion.a>
           </div>
         </div>
 
@@ -149,20 +194,20 @@ export default function HomePage() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.2 }}
               >
-                <input
-                  type="text"
-                  className="flex-grow p-2 border rounded-l-md focus:outline-none focus:border-blue-500"
-                  placeholder="Type your response..."
-                  onKeyDown={(e) => e.key === "Enter" && handleUserInput(e.target.value) && (e.target.value = "")}
+                 <textarea
+                  className="flex-grow p-2 border rounded-l-md focus:outline-none focus:border-blue-500 resize-none"
+                  placeholder="Type your response... (Shift + Enter for new line)"
+                  value={message}
+                  rows={2}
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyDown={handleKeyDown}
                 />
+
+                
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    const input = document.querySelector("input").value;
-                    handleUserInput(input);
-                    document.querySelector("input").value = "";
-                  }}
+                  onClick={() => handleUserInput(message)}
                   className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-2 rounded-r-md"
                 >
                   <Send size={20} />
