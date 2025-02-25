@@ -1,5 +1,5 @@
 "use client";
-
+import { Analytics } from '@vercel/analytics/react';
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -13,6 +13,7 @@ export default function HomePage() {
   const [messages, setMessages] = useState([{ sender: "bot", text: "Hello there! Please enter your name to proceed further." }]);
   const [message, setMessage] = useState("");
   const chatBoxRef = useRef(null);
+  <Analytics />
 
   useEffect(() => {
     if (chatBoxRef.current) {
@@ -383,5 +384,6 @@ export default function HomePage() {
         )}
       </AnimatePresence>
     </main>
+    
   );
 }
