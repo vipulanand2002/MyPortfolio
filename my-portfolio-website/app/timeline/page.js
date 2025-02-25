@@ -58,7 +58,7 @@ const DescriptionCard = ({ description, isVisible }) => {
     }
   }, [isVisible]);
 
-  const handleScroll = (e) => {
+  const handleScroll = () => {
     if (descriptionRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = descriptionRef.current;
       setScrollPosition(scrollTop / (scrollHeight - clientHeight));

@@ -236,7 +236,7 @@ export default function AboutMePage() {
           About Me
         </h1>
         <p className="text-lg text-gray-700">
-          Here's a little more about me!
+          Here&apos;s a little more about me!
         </p>
       </motion.div>
 

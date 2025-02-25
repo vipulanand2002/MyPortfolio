@@ -178,7 +178,7 @@ export default function HomePage() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
             >
-              Hi, I'm Vipul Anand 👋
+              Hi, I&apos;m Vipul Anand 👋
             </motion.h1>
             <motion.p 
               className="mt-4 text-lg text-gray-700 max-w-lg"

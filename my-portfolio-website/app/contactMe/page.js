@@ -31,7 +31,7 @@ export default function ContactMe() {
       } else {
         setError(result.message || "Something went wrong!");
       }
-    } catch (err) {
+    } catch {
       setError("Server error. Try again later.");
     } finally {
       setLoading(false);

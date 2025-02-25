@@ -1,5 +1,5 @@
 require("dotenv").config();
-const express = require("express");
+import express from "express";
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 
