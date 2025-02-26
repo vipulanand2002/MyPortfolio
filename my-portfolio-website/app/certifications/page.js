@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FiEye } from "react-icons/fi";
+import { FiEye, FiDownload, FiExternalLink } from "react-icons/fi";
 import { motion } from "framer-motion";
 
 const certifications = [
@@ -64,6 +64,22 @@ const certifications = [
 export default function CertificationsPage() {
   const [selectedPdf, setSelectedPdf] = useState(null);
   const [hovered, setHovered] = useState(null);
+  const [modalView, setModalView] = useState('options'); // 'options' or 'iframe'
+
+  // Find the selected certification details
+  const selectedCert = certifications.find(
+    cert => cert.pdfUrl === selectedPdf
+  );
+
+  const openPdfModal = (pdfUrl) => {
+    setSelectedPdf(pdfUrl);
+    setModalView('options');
+  };
+
+  const closeModal = () => {
+    setSelectedPdf(null);
+    setModalView('options');
+  };
 
   return (
     <motion.section 
@@ -78,11 +94,12 @@ export default function CertificationsPage() {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="text-center mb-8 md:mb-16"
       >
-      <h1 className="text-3xl font-bold text-blue-600 text-center">Certifications</h1>
-      <p className="mt-4 text-lg text-gray-700 text-center">
-        A list of certifications I have completed.
-      </p>
-    </motion.div>
+        <h1 className="text-3xl font-bold text-blue-600 text-center">Certifications</h1>
+        <p className="mt-4 text-lg text-gray-700 text-center">
+          A list of certifications I have completed.
+        </p>
+      </motion.div>
+      
       <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {certifications.map((cert) => (
           <div
@@ -94,7 +111,7 @@ export default function CertificationsPage() {
               className="absolute top-3 right-5 cursor-pointer"
               onMouseEnter={() => setHovered(cert.id)}
               onMouseLeave={() => setHovered(null)}
-              onClick={() => setSelectedPdf(cert.pdfUrl)}
+              onClick={() => openPdfModal(cert.pdfUrl)}
             >
               <FiEye
                 className="text-gray-500 hover:text-blue-600 transition-transform hover:scale-110"
@@ -116,8 +133,7 @@ export default function CertificationsPage() {
 
             {/* Buttons at Bottom */}
             <div className="mt-auto pt-4 flex space-x-3">
-
-              {/* External Link (Optional) */}
+              {/* Verify Link */}
               {cert.verifyLink && (
                 <a
                   href={cert.verifyLink}
@@ -129,6 +145,7 @@ export default function CertificationsPage() {
                 </a>
               )}
 
+              {/* Course Link */}
               {cert.externalLink && (
                 <a
                   href={cert.externalLink}
@@ -144,28 +161,130 @@ export default function CertificationsPage() {
         ))}
       </div>
 
-      {/* PDF Preview Modal */}
+      {/* Mobile-Friendly PDF Modal */}
       {selectedPdf && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 transition-opacity animate-fadeIn">
-          <div className="bg-white p-6 rounded-lg max-w-3xl w-full relative shadow-lg animate-slideIn">
-            <button
-              onClick={() => setSelectedPdf(null)}
-              className="absolute top-2 right-2 text-red-600 text-xl hover:scale-125 transition-transform"
-            >
-              ✖
-            </button>
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 transition-opacity animate-fadeIn">
+          <div className="bg-white rounded-lg max-w-3xl w-full max-h-full overflow-auto relative shadow-lg animate-slideIn">
+            {/* Modal Header */}
+            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-gray-800 truncate">
+                {selectedCert?.name}
+              </h3>
+              <button
+                onClick={closeModal}
+                className="text-gray-500 hover:text-red-600 hover:scale-125 transition-transform"
+                aria-label="Close"
+              >
+                <span className="text-xl">✖</span>
+              </button>
+            </div>
 
-            {/* Improved PDF Preview with Fallback */}
-            <object
-              data={selectedPdf}
-              type="application/pdf"
-              width="100%"
-              height="490px"
-            >
-              <p className="text-center text-gray-600 mt-2">
-                PDF preview not available.{" "}
-              </p>
-            </object>
+            {/* Modal Content */}
+            <div className="p-4">
+              {modalView === 'options' ? (
+                <div className="flex flex-col space-y-4">
+                  <p className="text-gray-600">
+                    Choose how you'd like to view this certificate:
+                  </p>
+                  
+                  {/* Option buttons */}
+                  <div className="grid gap-4 mt-4">
+                    {/* Direct Download */}
+                    <a
+                      href={selectedPdf}
+                      download
+                      className="flex items-center justify-center gap-2 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      <FiDownload className="h-5 w-5" />
+                      <span>Download PDF</span>
+                    </a>
+                    
+                    {/* Open in new tab */}
+                    <a
+                      href={selectedPdf}
+                      target="_blank"
+                      rel="noopener noreferrer" 
+                      className="flex items-center justify-center gap-2 bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                      <FiExternalLink className="h-5 w-5" />
+                      <span>Open in New Tab</span>
+                    </a>
+                    
+                    {/* Try Embedded Viewer */}
+                    <button
+                      onClick={() => setModalView('iframe')}
+                      className="flex items-center justify-center gap-2 bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors"
+                    >
+                      <FiEye className="h-5 w-5" />
+                      <span>Try Embedded Viewer</span>
+                    </button>
+                  </div>
+                  
+                  {/* Verification link */}
+                  {selectedCert?.verifyLink && (
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <p className="text-gray-600 mb-2">Verify this certification:</p>
+                      <a
+                        href={selectedCert.verifyLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline inline-flex items-center"
+                      >
+                        <FiExternalLink className="mr-1" /> 
+                        Verify on {selectedCert.issuer.split(' - ')[0]}
+                      </a>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="w-full">
+                  <div className="flex justify-between items-center mb-4">
+                    <button
+                      onClick={() => setModalView('options')}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      ← Back to Options
+                    </button>
+                    <a
+                      href={selectedPdf}
+                      download
+                      className="text-blue-600 hover:text-blue-800 flex items-center"
+                    >
+                      <FiDownload className="mr-1" /> Download
+                    </a>
+                  </div>
+                  
+                  {/* iframe PDF viewer with fallback message */}
+                  <div className="border border-gray-300 rounded">
+                    <iframe
+                      src={selectedPdf}
+                      width="100%"
+                      height="480"
+                      className="border-none w-full"
+                      title={selectedCert?.name}
+                      sandbox="allow-same-origin allow-scripts"
+                      loading="lazy"
+                    >
+                      <p className="p-4 text-center text-gray-600">
+                        Your browser doesn't support embedded PDFs.
+                        <a 
+                          href={selectedPdf} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline block mt-2"
+                        >
+                          Open the PDF directly instead.
+                        </a>
+                      </p>
+                    </iframe>
+                  </div>
+                  
+                  <p className="text-sm text-gray-500 mt-2">
+                    Having trouble? Try the download or "Open in New Tab" options.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
