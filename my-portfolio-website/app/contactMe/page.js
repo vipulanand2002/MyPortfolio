@@ -6,8 +6,7 @@ import { motion } from "framer-motion";
 export default function ContactMe() {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
+  const [status, setStatus] = useState({ success: false, message: "" });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -16,6 +15,7 @@ export default function ContactMe() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setStatus({ success: false, message: "" });
 
     try {
       const response = await fetch("/api/contact", {
@@ -26,13 +26,13 @@ export default function ContactMe() {
 
       const result = await response.json();
       if (result.success) {
-        setSuccess(true);
+        setStatus({ success: true, message: "Email sent successfully!" });
         setFormData({ name: "", email: "", message: "" });
       } else {
-        setError(result.message || "Something went wrong!");
+        setStatus({ success: false, message: result.message || "Something went wrong!" });
       }
     } catch {
-      setError("Server error. Try again later.");
+      setStatus({ success: false, message: "Server error. Try again later." });
     } finally {
       setLoading(false);
     }
@@ -51,16 +51,17 @@ export default function ContactMe() {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="text-center mb-8 md:mb-16"
       >
-      <h1 className="text-3xl font-bold text-blue-600">Contact Me</h1>
-      <p className="mt-4 text-lg text-gray-700">Feel free to reach out!</p>
-    </motion.div>
+        <h1 className="text-3xl font-bold text-blue-600">Contact Me</h1>
+        <p className="mt-4 text-lg text-gray-700">Feel free to reach out!</p>
+      </motion.div>
+
       {/* Social Links */}
       <div className="mt-6 flex justify-center space-x-6">
         <a href="https://linkedin.com/in/your-profile" target="_blank" rel="noopener noreferrer" className="text-blue-600 text-2xl hover:scale-110 transition">
-          🔗 LinkedIn
+          LinkedIn
         </a>
         <a href="https://github.com/your-github" target="_blank" rel="noopener noreferrer" className="text-gray-900 text-2xl hover:scale-110 transition">
-          🐙 GitHub
+          GitHub
         </a>
       </div>
 
@@ -102,8 +103,11 @@ export default function ContactMe() {
           {loading ? "Sending..." : "Send Message"}
         </button>
 
-        {success && <p className="text-green-600 mt-4">Email sent successfully!</p>}
-        {error && <p className="text-red-600 mt-4">{error}</p>}
+        {status.message && (
+          <p className={`mt-4 ${status.success ? "text-green-600" : "text-red-600"}`}>
+            {status.message}
+          </p>
+        )}
       </form>
     </motion.section>
   );

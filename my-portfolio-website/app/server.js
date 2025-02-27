@@ -4,19 +4,19 @@ const cors = require("cors");
 const nodemailer = require("nodemailer");
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: process.env.CLIENT_URL })); // Set CORS for frontend domain
 
-// Nodemailer Transporter (Sendinblue SMTP)
+// Nodemailer Transporter (Brevo SMTP)
 const transporter = nodemailer.createTransport({
   host: "smtp-relay.sendinblue.com",
   port: 587,
   auth: {
-    user: process.env.SMTP_EMAIL, // Your Sendinblue email
-    pass: process.env.SMTP_PASSWORD, // Your Sendinblue SMTP password
+    user: process.env.SMTP_EMAIL, // Your Brevo-verified email
+    pass: process.env.SMTP_PASSWORD, // Brevo SMTP password
   },
 });
 
@@ -26,10 +26,18 @@ app.post("/send-email", async (req, res) => {
 
   try {
     const mailOptions = {
-      from: email, // Sender email
-      to: "your-email@example.com", // Your email where you receive messages
+      from: `"${name}" <no-reply@yourdomain.com>`, // Use your verified domain
+      to: process.env.RECEIVER_EMAIL, // Your email where you receive messages
+      replyTo: email, // Set user's email as reply-to
       subject: `New Contact Request from ${name}`,
-      text: message,
+      text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+      html: `
+        <h3>New Contact Request</h3>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `,
     };
 
     await transporter.sendMail(mailOptions);
@@ -42,5 +50,5 @@ app.post("/send-email", async (req, res) => {
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
