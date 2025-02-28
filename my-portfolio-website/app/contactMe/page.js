@@ -5,8 +5,7 @@ import { motion } from "framer-motion";
 export default function ContactMe() {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
+  const [status, setStatus] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,8 +14,7 @@ export default function ContactMe() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setSuccess(false);
-    setError("");
+    setStatus("");
 
     try {
       const response = await fetch("/api/contact", {
@@ -27,13 +25,13 @@ export default function ContactMe() {
 
       const result = await response.json();
       if (result.success) {
-        setSuccess(true);
+        setStatus("Email sent successfully!");
         setFormData({ name: "", email: "", message: "" });
       } else {
-        setError(result.message || "Something went wrong!");
+        setStatus("Failed to send email.");
       }
     } catch {
-      setError("Server error. Try again later.");
+      setStatus("Server error. Try again later.");
     } finally {
       setLoading(false);
     }
@@ -86,8 +84,7 @@ export default function ContactMe() {
           {loading ? "Sending..." : "Send Message"}
         </button>
 
-        {success && <p className="text-green-600 mt-4">Email sent successfully!</p>}
-        {error && <p className="text-red-600 mt-4">{error}</p>}
+        {status && <p className="mt-4 text-green-600">{status}</p>}
       </form>
     </motion.section>
   );

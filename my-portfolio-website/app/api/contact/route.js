@@ -8,23 +8,23 @@ export async function POST(req) {
       return Response.json({ success: false, message: "All fields are required" }, { status: 400 });
     }
 
-    // Create Nodemailer Transporter
+    // Nodemailer Transporter
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_SERVER,
       port: process.env.SMTP_PORT,
       auth: {
-        user: process.env.SMTP_EMAIL,
+        user: process.env.SMTP_EMAIL,  // Use your verified Brevo email
         pass: process.env.SMTP_PASSWORD,
       },
     });
 
     // Email Options
     const mailOptions = {
-      from: email,  // Use sender's email
+      from: `"${name}" <${process.env.VERIFIED_EMAIL}>`, // Always send from your verified email
       to: process.env.RECEIVER_EMAIL,  // Your email where you receive messages
       subject: `New Contact Request from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
-      replyTo: email,  // Allows you to reply directly to sender
+      replyTo: email,  // Allows you to reply directly to the sender
     };
 
     await transporter.sendMail(mailOptions);

@@ -26,7 +26,7 @@ app.post("/send-email", async (req, res) => {
 
   try {
     const mailOptions = {
-      from: `"${name}" <no-reply@yourdomain.com>`, // Use your verified domain
+      from: `"${name}" <karnvipul2002@gmail.com>`, // Use your verified domain
       to: process.env.RECEIVER_EMAIL, // Your email where you receive messages
       replyTo: email, // Set user's email as reply-to
       subject: `New Contact Request from ${name}`,
