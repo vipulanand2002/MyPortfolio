@@ -38,15 +38,22 @@ export default function ContactMe() {
   };
 
   return (
-    <motion.section
-      className="container mx-auto p-6 text-center"
+    <motion.section 
+      className="container mx-auto p-6"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="text-center mb-8 md:mb-16"
+      >
       <h1 className="text-3xl font-bold text-blue-600">Contact Me</h1>
       <p className="mt-4 text-lg text-gray-700">Feel free to reach out!</p>
-
+      </motion.div>
+      
       <form onSubmit={handleSubmit} className="mt-6 max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg">
         <input
           type="text"
