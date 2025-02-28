@@ -1,12 +1,12 @@
 "use client";
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 
 export default function ContactMe() {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState({ success: false, message: "" });
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,7 +15,8 @@ export default function ContactMe() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setStatus({ success: false, message: "" });
+    setSuccess(false);
+    setError("");
 
     try {
       const response = await fetch("/api/contact", {
@@ -26,13 +27,13 @@ export default function ContactMe() {
 
       const result = await response.json();
       if (result.success) {
-        setStatus({ success: true, message: "Email sent successfully!" });
+        setSuccess(true);
         setFormData({ name: "", email: "", message: "" });
       } else {
-        setStatus({ success: false, message: result.message || "Something went wrong!" });
+        setError(result.message || "Something went wrong!");
       }
     } catch {
-      setStatus({ success: false, message: "Server error. Try again later." });
+      setError("Server error. Try again later.");
     } finally {
       setLoading(false);
     }
@@ -45,27 +46,9 @@ export default function ContactMe() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <motion.div
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="text-center mb-8 md:mb-16"
-      >
-        <h1 className="text-3xl font-bold text-blue-600">Contact Me</h1>
-        <p className="mt-4 text-lg text-gray-700">Feel free to reach out!</p>
-      </motion.div>
+      <h1 className="text-3xl font-bold text-blue-600">Contact Me</h1>
+      <p className="mt-4 text-lg text-gray-700">Feel free to reach out!</p>
 
-      {/* Social Links */}
-      <div className="mt-6 flex justify-center space-x-6">
-        <a href="https://linkedin.com/in/your-profile" target="_blank" rel="noopener noreferrer" className="text-blue-600 text-2xl hover:scale-110 transition">
-          LinkedIn
-        </a>
-        <a href="https://github.com/your-github" target="_blank" rel="noopener noreferrer" className="text-gray-900 text-2xl hover:scale-110 transition">
-          GitHub
-        </a>
-      </div>
-
-      {/* Contact Form */}
       <form onSubmit={handleSubmit} className="mt-6 max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg">
         <input
           type="text"
@@ -103,11 +86,8 @@ export default function ContactMe() {
           {loading ? "Sending..." : "Send Message"}
         </button>
 
-        {status.message && (
-          <p className={`mt-4 ${status.success ? "text-green-600" : "text-red-600"}`}>
-            {status.message}
-          </p>
-        )}
+        {success && <p className="text-green-600 mt-4">Email sent successfully!</p>}
+        {error && <p className="text-red-600 mt-4">{error}</p>}
       </form>
     </motion.section>
   );

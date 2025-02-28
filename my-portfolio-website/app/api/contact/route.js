@@ -1,35 +1,35 @@
+import nodemailer from "nodemailer";
+
 export async function POST(req) {
   try {
     const { name, email, message } = await req.json();
 
-    const sendinblueApiKey = process.env.SENDINBLUE_API_KEY;
-
-    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "api-key": sendinblueApiKey,
-      },
-      body: JSON.stringify({
-        sender: { email: "ishasinghal2002@gmail.com", name: "Isha" },
-        to: [{ email: "karnvipul2002@gmail.com", name: "Vipul's ID" }],
-        subject: `New Contact Request from ${name}`,
-        htmlContent: `
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Message:</strong> ${message}</p>
-        `,
-      }),
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      console.error("Sendinblue API error:", result);
-      return Response.json({ success: false, message: "Failed to send email" }, { status: 500 });
+    if (!name || !email || !message) {
+      return Response.json({ success: false, message: "All fields are required" }, { status: 400 });
     }
 
-    return Response.json({ success: true, message: "Email sent successfully!" });
+    // Create Nodemailer Transporter
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_SERVER,
+      port: process.env.SMTP_PORT,
+      auth: {
+        user: process.env.SMTP_EMAIL,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
+
+    // Email Options
+    const mailOptions = {
+      from: email,  // Use sender's email
+      to: process.env.RECEIVER_EMAIL,  // Your email where you receive messages
+      subject: `New Contact Request from ${name}`,
+      text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
+      replyTo: email,  // Allows you to reply directly to sender
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return Response.json({ success: true, message: "Email sent successfully!" }, { status: 200 });
   } catch (error) {
     console.error("Error sending email:", error);
     return Response.json({ success: false, message: "Failed to send email" }, { status: 500 });
