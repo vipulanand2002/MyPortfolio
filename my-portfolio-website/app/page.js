@@ -38,6 +38,32 @@ export default function HomePage() {
     return () => window.removeEventListener('resize', handleResize);
   }, [chatVisible]);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatus("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setStatus("Email sent successfully!");
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        setStatus("Failed to send email.");
+      }
+    } catch {
+      setStatus("Server error. Try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleUserInput = (input) => {
     if (!input.trim()) return;
 
