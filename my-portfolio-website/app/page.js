@@ -8,10 +8,10 @@ import { MessageCircle, X, Send, Linkedin, Github, Download, Mail } from 'lucide
 
 export default function HomePage() {
   const [chatVisible, setChatVisible] = useState(false);
-  const [chatStep, setChatStep] = useState(0);
-  const [userData, setUserData] = useState({ name: "", email: "", message: "" });
   const [messages, setMessages] = useState([{ sender: "bot", text: "Hello there! Please enter your name to proceed further." }]);
-  const [message, setMessage] = useState("");
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
   const chatBoxRef = useRef(null);
   <Analytics />
 
@@ -38,6 +38,10 @@ export default function HomePage() {
     return () => window.removeEventListener('resize', handleResize);
   }, [chatVisible]);
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -53,38 +57,18 @@ export default function HomePage() {
       const result = await response.json();
       if (result.success) {
         setStatus("Email sent successfully!");
+        setMessages((prev) => [...prev, { sender: "bot", text: `Thank you for reaching out, ${formData.name}! I'll respond to ${formData.email} as soon as possible. ✅` }]);
         setFormData({ name: "", email: "", message: "" });
       } else {
         setStatus("Failed to send email.");
+        setMessages((prev) => [...prev, { sender: "bot", text: "Failed to send email. Please try again." }]);
       }
     } catch {
       setStatus("Server error. Try again later.");
+      setMessages((prev) => [...prev, { sender: "bot", text: "Server error. Please try again later." }]);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleUserInput = (input) => {
-    if (!input.trim()) return;
-
-    setMessages([...messages, { sender: "user", text: input }]);
-    setMessage("");
-
-    setTimeout(() => {
-      let nextMessage = "";
-      if (chatStep === 0) {
-        setUserData({ ...userData, name: input });
-        nextMessage = `Nice to meet you, ${input}! Please enter your email so I can get back to you:`;
-      } else if (chatStep === 1) {
-        setUserData({ ...userData, email: input });
-        nextMessage = "Great! What message would you like to send me?";
-      } else if (chatStep === 2) {
-        setUserData({ ...userData, message: input });
-        nextMessage = `Thank you for reaching out, ${userData.name}! I'll respond to ${userData.email} as soon as possible. ✅`;
-      }
-      setMessages((prev) => [...prev, { sender: "bot", text: nextMessage }]);
-      setChatStep(chatStep + 1);
-    }, 800);
   };
 
   const slideUpVariants = {
@@ -103,18 +87,11 @@ export default function HomePage() {
     hover: {
       scale: 1.2,
       rotate: [0, 10, -10, 0],
-      transition: { 
+      transition: {
         duration: 0.5,
-        type: "spring", 
+        type: "spring",
         stiffness: 300
       }
-    }
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault(); // Prevents new line on Enter
-      handleUserInput(message);
     }
   };
 
@@ -123,7 +100,7 @@ export default function HomePage() {
       {/* Background Elements */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {/* Animated Blob 1 */}
-        <motion.div 
+        <motion.div
           className="absolute top-0 left-0 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30"
           animate={{
             x: [0, 50, 0],
@@ -136,9 +113,9 @@ export default function HomePage() {
             repeatType: "reverse",
           }}
         />
-        
+
         {/* Animated Blob 2 */}
-        <motion.div 
+        <motion.div
           className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30"
           animate={{
             x: [0, -50, 0],
@@ -151,9 +128,9 @@ export default function HomePage() {
             repeatType: "reverse",
           }}
         />
-        
+
         {/* Animated Blob 3 */}
-        <motion.div 
+        <motion.div
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20"
           animate={{
             scale: [1, 1.2, 1],
@@ -164,7 +141,7 @@ export default function HomePage() {
             repeatType: "reverse",
           }}
         />
-        
+
         {/* Floating particles */}
         <div className="absolute inset-0">
           {Array.from({ length: 8 }).map((_, index) => (
@@ -188,7 +165,6 @@ export default function HomePage() {
           ))}
         </div>
       </div>
-
       <section className="container mx-auto px-4 pt-8 pb-20 md:py-16 relative z-10">
         {/* Hero Section */}
         <motion.div
@@ -199,7 +175,7 @@ export default function HomePage() {
         >
           {/* Left Side - Introduction */}
           <div className="md:w-1/2 text-center md:text-left">
-            <motion.h1 
+            <motion.h1
               className="text-4xl md:text-5xl font-bold text-blue-600"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -207,7 +183,7 @@ export default function HomePage() {
             >
               Hi, I&apos;m Vipul Anand 👋
             </motion.h1>
-            <motion.p 
+            <motion.p
               className="mt-4 text-lg text-gray-700 max-w-lg"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -215,36 +191,36 @@ export default function HomePage() {
             >
               Passionate Developer specializing in creating responsive and intuitive user experiences with React & Next.js.
             </motion.p>
-            
-            <motion.div 
+
+            <motion.div
               className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.5 }}
             >
-              <Link href="/VipulAnand_Resume.pdf" target="_blank" 
+              <Link href="/VipulAnand_Resume.pdf" target="_blank"
                 className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg hover:bg-blue-500 shadow-md flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:translate-y-1 hover:scale-105"
               >
                 <Download size={20} />
                 <span>Resume</span>
               </Link>
-              <Link href="/contactMe" 
+              <Link href="/contactMe"
                 className="bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-3 rounded-lg hover:bg-gray-700 shadow-md flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:translate-y-1 hover:scale-105"
               >
                 <Mail size={20} />
                 <span>Contact Me</span>
               </Link>
             </motion.div>
-            
+
             {/* Social Media Icons */}
-            <motion.div 
+            <motion.div
               className="mt-8 flex space-x-6 justify-center md:justify-start"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.5 }}
             >
-              <motion.a 
-                href="https://linkedin.com/in/anandvipul2002" 
+              <motion.a
+                href="https://linkedin.com/in/anandvipul2002"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:text-blue-800 transition-colors duration-300"
@@ -254,8 +230,8 @@ export default function HomePage() {
               >
                 <Linkedin size={32} />
               </motion.a>
-              <motion.a 
-                href="https://github.com/vipulanand2002" 
+              <motion.a
+                href="https://github.com/vipulanand2002"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-800 hover:text-gray-900 transition-colors duration-300"
@@ -278,22 +254,22 @@ export default function HomePage() {
             <div className="relative">
               <motion.div
                 className="absolute -inset-4 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-xl opacity-70 blur-xl"
-                animate={{ 
+                animate={{
                   rotate: [0, 5, 0, -5, 0],
                   scale: [1, 1.05, 1]
                 }}
-                transition={{ 
-                  duration: 10, 
+                transition={{
+                  duration: 10,
                   repeat: Infinity,
-                  repeatType: "reverse" 
+                  repeatType: "reverse"
                 }}
               />
-              <Image 
-                src="/mainprofile.jpg" 
-                alt="Vipul Anand" 
-                width={350} 
-                height={350} 
-                className="relative z-10 shadow-xl object-cover rounded-xl border-2 border-white" 
+              <Image
+                src="/mainprofile.jpg"
+                alt="Vipul Anand"
+                width={350}
+                height={350}
+                className="relative z-10 shadow-xl object-cover rounded-xl border-2 border-white"
                 priority
               />
             </div>
@@ -302,7 +278,7 @@ export default function HomePage() {
       </section>
 
       {/* Chatbot Icon */}
-      <motion.div 
+      <motion.div
         className="fixed bottom-6 right-6 z-30"
         variants={pulseVariants}
         animate="pulse"
@@ -317,7 +293,6 @@ export default function HomePage() {
           {chatVisible ? <X size={24} /> : <MessageCircle size={24} />}
         </motion.button>
       </motion.div>
-
       {/* Chatbot Window */}
       <AnimatePresence>
         {chatVisible && (
@@ -330,15 +305,15 @@ export default function HomePage() {
             transition={{ duration: 0.2 }}
           >
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 flex items-center space-x-3">
-              <Image 
-                src="/profile.jpeg" 
-                alt="Chat Profile" 
-                width={40} 
-                height={40} 
+              <Image
+                src="/profile.jpeg"
+                alt="Chat Profile"
+                width={40}
+                height={40}
                 className="rounded-full border-2 border-white shadow-md"
               />
               <span className="font-bold text-lg">Chat with Vipul</span>
-              <button 
+              <button
                 onClick={() => setChatVisible(false)}
                 className="ml-auto bg-white bg-opacity-20 p-1 rounded-full hover:bg-opacity-30 transition-all"
                 aria-label="Close chat"
@@ -346,7 +321,7 @@ export default function HomePage() {
                 <X size={18} />
               </button>
             </div>
-            
+
             <div className="p-4 h-64 sm:h-80 overflow-y-auto bg-gray-50" ref={chatBoxRef}>
               {messages.map((msg, index) => (
                 <motion.div
@@ -358,58 +333,89 @@ export default function HomePage() {
                 >
                   {msg.sender === "bot" && (
                     <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mr-2">
-                      <Image 
-                        src="/profile.jpeg" 
-                        alt="Vipul" 
-                        width={32} 
-                        height={32} 
+                      <Image
+                        src="/profile.jpeg"
+                        alt="Vipul"
+                        width={32}
+                        height={32}
                         className="object-cover"
                       />
                     </div>
                   )}
-                  <div className={`max-w-[80%] p-3 rounded-xl ${
-                    msg.sender === "bot" 
-                      ? "bg-white shadow-md text-gray-800 border border-gray-100" 
-                      : "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md"
-                  }`}>
+                  <div className={`max-w-[80%] p-3 rounded-xl ${msg.sender === "bot"
+                    ? "bg-white shadow-md text-gray-800 border border-gray-100"
+                    : "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md"
+                    }`}>
                     {msg.text}
                   </div>
                 </motion.div>
               ))}
+              {status && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="my-3 flex justify-center"
+                >
+                  <div className="max-w-[80%] p-3 rounded-xl bg-white shadow-md text-gray-800 border border-gray-100">
+                    {status}
+                  </div>
+                </motion.div>
+              )}
             </div>
-            
-            {chatStep <= 2 && (
-              <motion.div 
-                className="p-3 border-t border-gray-200 flex items-end bg-white"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.2 }}
-              >
-                <textarea
-                  className="flex-grow p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none mr-2 text-gray-700"
-                  placeholder="Type your response... (Shift + Enter for new line)"
-                  value={message}
-                  rows={2}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                />
-                
+
+            <motion.div
+              className="p-3 border-t border-gray-200 flex items-end bg-white"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
+            >
+              <form onSubmit={handleSubmit} className="flex w-full">
+                <div className="flex-grow mr-2">
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Your Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-gray-700 mb-2"
+                    required
+                  />
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Your Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-gray-700 mb-2"
+                    required
+                  />
+                  <textarea
+                    name="message"
+                    placeholder="Your Message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-gray-700"
+                    rows={2}
+                    required
+                  />
+                </div>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => handleUserInput(message)}
+                  type="submit"
                   className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-3 rounded-lg shadow-md"
-                  disabled={!message.trim()}
+                  disabled={loading}
                   aria-label="Send message"
                 >
-                  <Send size={20} />
+                  {loading ? "Sending..." : <Send size={20} />}
                 </motion.button>
-              </motion.div>
-            )}
+              </form>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
     </main>
-    
+
   );
 }
