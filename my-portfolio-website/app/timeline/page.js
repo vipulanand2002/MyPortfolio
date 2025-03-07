@@ -11,8 +11,7 @@ const experiences = [
     description: [
       "Class 12th (PCM stream) - 75% marks in CBSE Board Exams.",
       "Class 10th - 86% marks in CBSE Board Exams.",
-      "School Captain for 2 years (2018 - 2020)",
-      ""
+      "School House Captain for 2 years (2018 - 2020)",
     ],
     icon: "🎓",
     skills: []

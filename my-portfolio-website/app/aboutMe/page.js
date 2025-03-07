@@ -68,7 +68,7 @@ const sections = [
     content: [
       {
         title: "Analyst  - TresVista Financial Services Pvt. Ltd (Bengaluru, Karnataka)",
-        period: "Jan 2023 - Present",
+        period: "Jul 2024 - Present",
         details: [
           "Built custom web applications for various clients",
           "Worked on Several POCs for organization including",
@@ -97,7 +97,7 @@ const sections = [
         period: "2019 - 2020",
         details: [
           "PCM Stream - 75% marks in CBSE Board Exams",
-          "School Captain for 2 years (2018 - 2020)"
+          "School House Captain for 2 years (2018 - 2020)"
         ]
       },
       {
