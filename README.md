@@ -39,7 +39,7 @@ npm run dev
 
 ## 🛠️ Deployment
 This project is deployed on Vercel. Check it out live: 
-**[Live Portfolio](https://your-portfolio.vercel.app/)**
+**[Live Portfolio](https://my-portfolio-vipulanand2002s-projects.vercel.app/)**
 
 
 
