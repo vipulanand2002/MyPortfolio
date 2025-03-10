@@ -44,4 +44,4 @@ This project is deployed on Vercel. Check it out live:
 
 
 
-## 💡 If you like this project, don't forget to ⭐ the repo!
+## 💡 If you like this project, don't forget to ⭐ the repository!
