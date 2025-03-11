@@ -4,7 +4,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import { MessageCircle, X, Send, Linkedin, Github, Download, Mail } from 'lucide-react';
+import { MessageCircle, X, Send, Linkedin, Github, Download, Mail, Moon, Sun } from 'lucide-react';
 
 export default function HomePage() {
     const [chatVisible, setChatVisible] = useState(false);
@@ -15,6 +15,33 @@ export default function HomePage() {
     const chatBoxRef = useRef(null);
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState("");
+    const [darkMode, setDarkMode] = useState(false);
+    
+    // Initialize dark mode based on user preference
+    useEffect(() => {
+        // Check for saved preference
+        const savedMode = localStorage.getItem('darkMode');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        // Set initial theme based on saved preference or system preference
+        if (savedMode !== null) {
+            setDarkMode(savedMode === 'true');
+        } else {
+            setDarkMode(prefersDark);
+        }
+    }, []);
+    
+    // Apply dark mode class to document when darkMode state changes
+    useEffect(() => {
+        if (darkMode) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        
+        // Save the preference
+        localStorage.setItem('darkMode', darkMode);
+    }, [darkMode]);
     
     useEffect(() => {
         if (chatBoxRef.current) {
@@ -36,6 +63,7 @@ export default function HomePage() {
         };
 
         window.addEventListener('resize', handleResize);
+        handleResize(); // Call initially to set correct sizes
         return () => window.removeEventListener('resize', handleResize);
     }, [chatVisible]);
 
@@ -55,65 +83,69 @@ export default function HomePage() {
             nextMessage = "Great! What message would you like to send me?";
             setChatStep(2);
         } else if (chatStep === 2) {
-          // Save the complete data including the message
-          const updatedUserData = { ...userData, message: input };
-          
-          // Update state
-          setUserData(updatedUserData);
-          
-          // Show typing indicator
-          setLoading(true);
-          
-          // Don't add a success message here - we'll let handleSubmit do that
-          setChatStep(3);
-          
-          // Use the complete data directly
-          handleSubmit(updatedUserData);
-          return; // Skip adding another bot message since handleSubmit will add one
-      }
+            // Save the complete data including the message
+            const updatedUserData = { ...userData, message: input };
+            
+            // Update state
+            setUserData(updatedUserData);
+            
+            // Show typing indicator
+            setLoading(true);
+            
+            // Don't add a success message here - we'll let handleSubmit do that
+            setChatStep(3);
+            
+            // Use the complete data directly
+            handleSubmit(updatedUserData);
+            return; // Skip adding another bot message since handleSubmit will add one
+        }
 
         // Move the bot message creation outside the conditional to avoid duplication
-            setTimeout(() => {
-                setMessages((prev) => [...prev, { sender: "bot", text: nextMessage }]);
-            }, 800);
+        setTimeout(() => {
+            setMessages((prev) => [...prev, { sender: "bot", text: nextMessage }]);
+        }, 800);
     };
 
     const handleSubmit = async (data = userData) => {
-      setLoading(true);
-      setStatus("");
+        setLoading(true);
+        setStatus("");
 
-      try {
-          const response = await fetch("/api/contact", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-          });
+        try {
+            const response = await fetch("/api/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
 
-          const result = await response.json();
-          if (result.success) {
-              // Add success message to chat
-              setMessages(prev => [...prev, { 
-                  sender: "bot", 
-                  text: `Thank you for reaching out, ${data.name}! I've received your message and will respond to ${data.email} as soon as possible.` 
-              }]);
-          } else {
-              setStatus("Failed to send message");
-              setMessages(prev => [...prev, { 
-                  sender: "bot", 
-                  text: "I'm sorry, there was an issue sending your message. Please try again later or contact me directly via email." 
-              }]);
-          }
-      } catch (error) {
-          setStatus("Server error");
-          setMessages(prev => [...prev, { 
-              sender: "bot", 
-              text: "I'm having trouble connecting to the server. Please try again later or reach out via LinkedIn." 
-          }]);
-          console.error("API Error", error);
-      } finally {
-          setLoading(false);
-      }
-  };
+            const result = await response.json();
+            if (result.success) {
+                // Add success message to chat
+                setMessages(prev => [...prev, { 
+                    sender: "bot", 
+                    text: `Thank you for reaching out, ${data.name}! I've received your message and will respond to ${data.email} as soon as possible.` 
+                }]);
+            } else {
+                setStatus("Failed to send message");
+                setMessages(prev => [...prev, { 
+                    sender: "bot", 
+                    text: "I'm sorry, there was an issue sending your message. Please try again later or contact me directly via email." 
+                }]);
+            }
+        } catch (error) {
+            setStatus("Server error");
+            setMessages(prev => [...prev, { 
+                sender: "bot", 
+                text: "I'm having trouble connecting to the server. Please try again later or reach out via LinkedIn." 
+            }]);
+            console.error("API Error", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+    };
 
     const slideUpVariants = {
         hidden: { opacity: 0, y: 20 },
@@ -147,12 +179,12 @@ export default function HomePage() {
     };
 
     return (
-        <main className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        <main className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-950 transition-colors duration-300">
             {/* Background Elements */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                 {/* Animated Blob 1 */}
                 <motion.div
-                    className="absolute top-0 left-0 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30"
+                    className="absolute top-0 left-0 w-96 h-96 bg-blue-200 dark:bg-blue-900 rounded-full mix-blend-multiply dark:mix-blend-overlay filter blur-3xl opacity-30"
                     animate={{
                         x: [0, 50, 0],
                         y: [0, 30, 0],
@@ -167,7 +199,7 @@ export default function HomePage() {
 
                 {/* Animated Blob 2 */}
                 <motion.div
-                    className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30"
+                    className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-200 dark:bg-indigo-900 rounded-full mix-blend-multiply dark:mix-blend-overlay filter blur-3xl opacity-30"
                     animate={{
                         x: [0, -50, 0],
                         y: [0, -30, 0],
@@ -182,7 +214,7 @@ export default function HomePage() {
 
                 {/* Animated Blob 3 */}
                 <motion.div
-                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20"
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-200 dark:bg-purple-900 rounded-full mix-blend-multiply dark:mix-blend-overlay filter blur-3xl opacity-20"
                     animate={{
                         scale: [1, 1.2, 1],
                     }}
@@ -198,7 +230,7 @@ export default function HomePage() {
                     {Array.from({ length: 8 }).map((_, index) => (
                         <motion.div
                             key={index}
-                            className="absolute w-2 h-2 bg-blue-400 rounded-full"
+                            className="absolute w-2 h-2 bg-blue-400 dark:bg-blue-500 rounded-full"
                             style={{
                                 top: `${Math.random() * 100}%`,
                                 left: `${Math.random() * 100}%`,
@@ -216,10 +248,12 @@ export default function HomePage() {
                     ))}
                 </div>
             </div>
+            
+            
             <section className="container mx-auto px-4 pt-8 pb-20 md:py-16 relative z-10">
                 {/* Hero Section */}
                 <motion.div
-                    className="flex flex-col md:flex-row items-center justify-between py-10 bg-white rounded-xl shadow-lg p-6 md:p-10 backdrop-blur-sm bg-opacity-80"
+                    className="flex flex-col md:flex-row items-center justify-between py-10 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-10 backdrop-blur-sm bg-opacity-80 dark:bg-opacity-80 transition-colors duration-300"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
@@ -227,7 +261,7 @@ export default function HomePage() {
                     {/* Left Side - Introduction */}
                     <div className="md:w-1/2 text-center md:text-left">
                         <motion.h1
-                            className="text-4xl md:text-5xl font-bold text-blue-600"
+                            className="text-4xl md:text-5xl font-bold text-blue-600 dark:text-blue-400"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.2, duration: 0.5 }}
@@ -235,7 +269,7 @@ export default function HomePage() {
                             Hi, I&apos;m Vipul Anand 👋
                         </motion.h1>
                         <motion.p
-                            className="mt-4 text-lg text-gray-700 max-w-lg"
+                            className="mt-4 text-lg text-gray-700 dark:text-gray-300 max-w-lg"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.4, duration: 0.5 }}
@@ -250,13 +284,13 @@ export default function HomePage() {
                             transition={{ delay: 0.6, duration: 0.5 }}
                         >
                             <Link href="/VipulAnand_Resume.pdf" target="_blank"
-                                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg hover:bg-blue-500 shadow-md flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:translate-y-1 hover:scale-105"
+                                className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-500 shadow-md flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-105"
                             >
                                 <Download size={20} />
                                 <span>Resume</span>
                             </Link>
                             <Link href="/contactMe"
-                                className="bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-3 rounded-lg hover:bg-gray-700 shadow-md flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:translate-y-1 hover:scale-105"
+                                className="bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 shadow-md flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-105"
                             >
                                 <Mail size={20} />
                                 <span>Contact Me</span>
@@ -274,8 +308,8 @@ export default function HomePage() {
                                 href="https://linkedin.com/in/anandvipul2002"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-600 hover:text-blue-800 transition-colors duration-300"
-                               variants={socialIconVariants}
+                                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-300"
+                                variants={socialIconVariants}
                                 whileHover="hover"
                                 aria-label="LinkedIn Profile"
                             >
@@ -285,7 +319,7 @@ export default function HomePage() {
                                 href="https://github.com/vipulanand2002"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-gray-800 hover:text-gray-900 transition-colors duration-300"
+                                className="text-gray-800 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300"
                                 variants={socialIconVariants}
                                 whileHover="hover"
                                 aria-label="GitHub Profile"
@@ -304,7 +338,7 @@ export default function HomePage() {
                     >
                         <div className="relative">
                             <motion.div
-                                className="absolute -inset-4 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-xl opacity-70 blur-xl"
+                                className="absolute -inset-4 bg-gradient-to-r from-blue-400 to-indigo-500 dark:from-blue-600 dark:to-indigo-700 rounded-xl opacity-70 blur-xl"
                                 animate={{
                                     rotate: [0, 5, 0, -5, 0],
                                     scale: [1, 1.05, 1]
@@ -320,7 +354,7 @@ export default function HomePage() {
                                 alt="Vipul Anand"
                                 width={350}
                                 height={350}
-                                className="relative z-10 shadow-xl object-cover rounded-xl border-2 border-white"
+                                className="relative z-10 shadow-xl object-cover rounded-xl border-2 border-white dark:border-gray-700 transition-all duration-300"
                                 priority
                             />
                         </div>
@@ -336,7 +370,7 @@ export default function HomePage() {
             >
                 <motion.button
                     onClick={() => setChatVisible(!chatVisible)}
-                    className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all"
+                    className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     aria-label={chatVisible ? "Close chat" : "Open chat"}
@@ -344,18 +378,19 @@ export default function HomePage() {
                     {chatVisible ? <X size={24} /> : <MessageCircle size={24} />}
                 </motion.button>
             </motion.div>
+            
             {/* Chatbot Window */}
             <AnimatePresence>
                 {chatVisible && (
                     <motion.div
                         id="chat-window"
-                        className="fixed bottom-20 right-6 w-80 sm:w-96 bg-white shadow-2xl rounded-xl overflow-hidden z-20 border border-gray-200"
+                        className="fixed bottom-20 right-6 w-80 sm:w-96 bg-white dark:bg-gray-800 shadow-2xl rounded-xl overflow-hidden z-20 border border-gray-200 dark:border-gray-700 transition-colors duration-300"
                         initial={{ opacity: 0, y: 20, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
                     >
-                        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 flex items-center space-x-3">
+                        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-800 text-white p-4 flex items-center space-x-3">
                             <Image
                                 src="/profile.jpeg"
                                 alt="Chat Profile"
@@ -373,7 +408,7 @@ export default function HomePage() {
                             </button>
                         </div>
 
-                        <div className="p-4 h-64 sm:h-80 overflow-y-auto bg-gray-50" ref={chatBoxRef}>
+                        <div className="p-4 h-64 sm:h-80 overflow-y-auto bg-gray-50 dark:bg-gray-900 transition-colors duration-300" ref={chatBoxRef}>
                             {messages.map((msg, index) => (
                                 <motion.div
                                     key={index}
@@ -393,14 +428,30 @@ export default function HomePage() {
                                             />
                                         </div>
                                     )}
-                                    <div className={`max-w-[80%] p-3 rounded-xl ${msg.sender === "bot"
-                                        ? "bg-white shadow-md text-gray-800 border border-gray-100"
-                                        : "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md"
-                                        }`}>
+                                    <div className={`max-w-[80%] p-3 rounded-xl ${
+                                        msg.sender === "bot"
+                                            ? "bg-white dark:bg-gray-800 shadow-md text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-gray-700"
+                                            : "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md"
+                                    } transition-colors duration-300`}>
                                         {msg.text}
                                     </div>
                                 </motion.div>
                             ))}
+                            {loading && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="flex justify-start my-3"
+                                >
+                                    <div className="flex items-center bg-white dark:bg-gray-800 p-3 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+                                        <div className="flex space-x-1">
+                                            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
+                                            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
+                                            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "600ms" }}></div>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )}
                             {status && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 10 }}
@@ -408,7 +459,7 @@ export default function HomePage() {
                                     transition={{ duration: 0.2 }}
                                     className="my-3 flex justify-center"
                                 >
-                                    <div className="max-w-[80%] p-3 rounded-xl bg-white shadow-md text-gray-800 border border-gray-100">
+                                    <div className="max-w-[80%] p-3 rounded-xl bg-white dark:bg-gray-800 shadow-md text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
                                         {status}
                                     </div>
                                 </motion.div>
@@ -417,13 +468,13 @@ export default function HomePage() {
 
                         {chatStep <= 2 && (
                             <motion.div
-                                className="p-3 border-t border-gray-200 flex items-end bg-white"
+                                className="p-3 border-t border-gray-200 dark:border-gray-700 flex items-end bg-white dark:bg-gray-800 transition-colors duration-300"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.2 }}
                             >
                                 <textarea
-                                    className="flex-grow p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none mr-2 text-gray-700"
+                                    className="flex-grow p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none mr-2 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 transition-colors duration-300"
                                     placeholder="Type your response..."
                                     value={message}
                                     rows={2}
@@ -435,7 +486,7 @@ export default function HomePage() {
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => handleUserInput(message)}
-                                    className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-3 rounded-lg shadow-md"
+                                    className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 text-white p-3 rounded-lg shadow-md"
                                     disabled={!message.trim()}
                                     aria-label="Send message"
                                 >
