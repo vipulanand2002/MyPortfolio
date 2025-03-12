@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const sections = [
@@ -131,7 +131,6 @@ const containerVariants = {
       staggerChildren: 0.2,
     },
   },
-  
 };
 
 const cardVariants = {
@@ -159,16 +158,22 @@ const SubsectionContent = ({ item, index }) => {
     >
       <button
         onClick={() => setIsSubsectionOpen(!isSubsectionOpen)}
-        className="w-full text-left p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200"
+        className="w-full text-left p-3 rounded-lg transition-colors duration-200 
+          bg-blue-50 hover:bg-blue-100 
+          dark:bg-gray-800 dark:hover:bg-gray-700"
       >
         <div className="flex justify-between items-center">
-          <h3 className="font-semibold text-blue-800">{item.title}</h3>
+          <h3 className="font-semibold text-blue-800 dark:text-blue-400">
+            {item.title}
+          </h3>
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-blue-600">{item.period}</span>
+            <span className="text-sm text-blue-600 dark:text-blue-300">
+              {item.period}
+            </span>
             <motion.span
               animate={{ rotate: isSubsectionOpen ? 180 : 0 }}
               transition={{ duration: 0.3 }}
-              className="text-blue-600"
+              className="text-blue-600 dark:text-blue-300"
             >
               ▼
             </motion.span>
@@ -192,9 +197,9 @@ const SubsectionContent = ({ item, index }) => {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.1 }}
-                  className="flex items-center space-x-2 text-gray-700"
+                  className="flex items-center space-x-2 text-gray-700 dark:text-gray-300"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 dark:bg-blue-500" />
                   <span>{detail}</span>
                 </motion.li>
               ))}
@@ -216,7 +221,7 @@ export default function AboutMePage() {
 
   return (
     <motion.section
-      className="container mx-auto p-6 min-h-screen"
+      className="container mx-auto p-6 min-h-screen dark:bg-gray-900 dark:text-white bg-white text-black"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
@@ -232,10 +237,10 @@ export default function AboutMePage() {
           delay: 0.2 
         }}
       >
-        <h1 className="text-4xl font-bold text-blue-600 mb-4">
+        <h1 className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-4">
           About Me
         </h1>
-        <p className="text-lg text-gray-700">
+        <p className="text-lg text-gray-700 dark:text-gray-300">
           Here&apos;s a little more about me!
         </p>
       </motion.div>
@@ -254,27 +259,30 @@ export default function AboutMePage() {
           >
             <motion.button
               onClick={() => toggleCard(index)}
-              className="w-full p-5 flex justify-between items-center text-xl font-semibold bg-white hover:bg-blue-50 transition-colors duration-300 border shadow-sm"
+              className="w-full p-5 flex justify-between items-center text-xl font-semibold 
+                  bg-white hover:bg-blue-50 dark:bg-gray-800 dark:hover:bg-gray-700
+                  transition-colors duration-300 border dark:border-gray-700 shadow-sm"
               whileHover={{ scale: 1.005 }}
               whileTap={{ scale: 0.995 }}
             >
               <motion.span
-                animate={{
-                  color: hoveredIndex === index ? "#2563EB" : "#1F2937",
-                }}
-                transition={{ duration: 0.2 }}
+                className={`transition-colors duration-200 ${
+                  hoveredIndex === index 
+                    ? "text-blue-600 dark:text-blue-400" 
+                    : "text-gray-800 dark:text-gray-200"
+                }`}
               >
                 {section.title}
               </motion.span>
               <motion.span
-                animate={{ 
+                animate={{
                   rotate: openIndex === index ? 180 : 0,
-                  color: hoveredIndex === index ? "#2563EB" : "#1F2937"
                 }}
-                transition={{ 
+                className="text-gray-600 dark:text-gray-400"
+                transition={{
                   duration: 0.4,
                   type: "spring",
-                  stiffness: 200
+                  stiffness: 200,
                 }}
               >
                 ▼
@@ -306,7 +314,7 @@ export default function AboutMePage() {
                       opacity: { duration: 0.2 }
                     }
                   }}
-                  className="bg-white border-t"
+                  className="bg-white dark:bg-gray-800 border-t dark:border-gray-700"
                 >
                   <div className="p-5">
                     {section.hasSubsections ? (
@@ -321,9 +329,9 @@ export default function AboutMePage() {
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: i * 0.1 }}
-                            className="flex items-center space-x-2 text-gray-700"
+                            className="flex items-center space-x-2 text-gray-700 dark:text-gray-300"
                           >
-                            <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-400 dark:bg-blue-500" />
                             <span>{item}</span>
                           </motion.li>
                         ))}
