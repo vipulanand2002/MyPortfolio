@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiEye, FiDownload, FiExternalLink } from "react-icons/fi";
 import { motion } from "framer-motion";
 
@@ -65,6 +65,30 @@ export default function CertificationsPage() {
   const [selectedPdf, setSelectedPdf] = useState(null);
   const [hovered, setHovered] = useState(null);
   const [modalView, setModalView] = useState('options'); // 'options' or 'iframe'
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Check for dark mode on component mount and when theme changes
+  useEffect(() => {
+    // Check if dark mode is enabled (this depends on your dark mode implementation)
+    // This could be checking a class on the html/body element, localStorage, or a theme context
+    const checkDarkMode = () => {
+      // Example: check for a dark class on the html element
+      const isDark = document.documentElement.classList.contains('dark');
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    checkDarkMode();
+
+    // Listen for theme changes (if you're using a class-based approach)
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   // Find the selected certification details
   const selectedCert = certifications.find(
@@ -83,7 +107,7 @@ export default function CertificationsPage() {
 
   return (
     <motion.section 
-      className="container mx-auto p-6"
+      className={`container mx-auto p-6 ${isDarkMode ? 'text-gray-100' : 'text-gray-800'}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
@@ -94,8 +118,10 @@ export default function CertificationsPage() {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="text-center mb-8 md:mb-16"
       >
-        <h1 className="text-3xl font-bold text-blue-600 text-center">Certifications</h1>
-        <p className="mt-4 text-lg text-gray-700 text-center">
+        <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-blue-400' : 'text-blue-600'} text-center`}>
+          Certifications
+        </h1>
+        <p className={`mt-4 text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} text-center`}>
           A list of certifications I have completed.
         </p>
       </motion.div>
@@ -104,7 +130,8 @@ export default function CertificationsPage() {
         {certifications.map((cert) => (
           <div
             key={cert.id}
-            className="relative p-4 border border-gray-300 rounded-lg shadow-md bg-white transition-transform transform hover:scale-105 hover:shadow-lg flex flex-col"
+            className={`relative p-4 border ${isDarkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-300 bg-white'} 
+                        rounded-lg shadow-md transition-transform transform hover:scale-105 hover:shadow-lg flex flex-col`}
           >
             {/* Eye Icon with Tooltip */}
             <div
@@ -114,11 +141,11 @@ export default function CertificationsPage() {
               onClick={() => openPdfModal(cert.pdfUrl)}
             >
               <FiEye
-                className="text-gray-500 hover:text-blue-600 transition-transform hover:scale-110"
+                className={`${isDarkMode ? 'text-gray-400 hover:text-blue-400' : 'text-gray-500 hover:text-blue-600'} transition-transform hover:scale-110`}
                 size={22}
               />
               {hovered === cert.id && (
-                <span className="absolute -top-8 right-5 bg-gray-800 text-white text-xs rounded px-2 py-1 shadow-md">
+                <span className={`absolute -top-8 right-5 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-800'} text-white text-xs rounded px-2 py-1 shadow-md`}>
                   View Certificate
                 </span>
               )}
@@ -126,9 +153,15 @@ export default function CertificationsPage() {
 
             {/* Certification Details */}
             <div className="flex-grow">
-              <h2 className="text-xl font-semibold text-gray-900 pr-5">{cert.name}</h2>
-              <h3 className="text-md text-gray-600">{cert.issuer}</h3>
-              <p className="text-sm text-gray-500">{cert.date}</p>
+              <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-900'} pr-5`}>
+                {cert.name}
+              </h2>
+              <h3 className={`text-md ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                {cert.issuer}
+              </h3>
+              <p className={`text-sm ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                {cert.date}
+              </p>
             </div>
 
             {/* Buttons at Bottom */}
@@ -139,7 +172,7 @@ export default function CertificationsPage() {
                   href={cert.verifyLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-gray-600 text-white px-4 py-2 rounded-lg transition-transform hover:scale-110 hover:bg-gray-500 w-full text-center"
+                  className={`${isDarkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-600 hover:bg-gray-500'} text-white px-4 py-2 rounded-lg transition-transform hover:scale-110 w-full text-center`}
                 >
                   Verify
                 </a>
@@ -151,7 +184,7 @@ export default function CertificationsPage() {
                   href={cert.externalLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-gray-600 text-white px-4 py-2 rounded-lg transition-transform hover:scale-110 hover:bg-gray-500 w-full text-center"
+                  className={`${isDarkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-600 hover:bg-gray-500'} text-white px-4 py-2 rounded-lg transition-transform hover:scale-110 w-full text-center`}
                 >
                   Course Page
                 </a>
@@ -161,18 +194,18 @@ export default function CertificationsPage() {
         ))}
       </div>
 
-      {/* Mobile-Friendly PDF Modal */}
+      {/* Mobile-Friendly PDF Modal with Dark Mode Support */}
       {selectedPdf && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 transition-opacity animate-fadeIn">
-          <div className="bg-white rounded-lg max-w-3xl w-full max-h-full overflow-auto relative shadow-lg animate-slideIn">
+          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg max-w-3xl w-full max-h-full overflow-auto relative shadow-lg animate-slideIn`}>
             {/* Modal Header */}
-            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-800 truncate">
+            <div className={`p-4 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} border-b flex justify-between items-center`}>
+              <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'} truncate`}>
                 {selectedCert?.name}
               </h3>
               <button
                 onClick={closeModal}
-                className="text-gray-500 hover:text-red-600 hover:scale-125 transition-transform"
+                className={`${isDarkMode ? 'text-gray-400 hover:text-red-400' : 'text-gray-500 hover:text-red-600'} hover:scale-125 transition-transform`}
                 aria-label="Close"
               >
                 <span className="text-xl">✖</span>
@@ -183,7 +216,7 @@ export default function CertificationsPage() {
             <div className="p-4">
               {modalView === 'options' ? (
                 <div className="flex flex-col space-y-4">
-                  <p className="text-gray-600">
+                  <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     Choose how you'd like to view this certificate:
                   </p>
                   
@@ -193,7 +226,7 @@ export default function CertificationsPage() {
                     <a
                       href={selectedPdf}
                       download
-                      className="flex items-center justify-center gap-2 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+                      className={`flex items-center justify-center gap-2 ${isDarkMode ? 'bg-blue-700 hover:bg-blue-800' : 'bg-blue-600 hover:bg-blue-700'} text-white py-3 px-4 rounded-lg transition-colors`}
                     >
                       <FiDownload className="h-5 w-5" />
                       <span>Download PDF</span>
@@ -204,7 +237,7 @@ export default function CertificationsPage() {
                       href={selectedPdf}
                       target="_blank"
                       rel="noopener noreferrer" 
-                      className="flex items-center justify-center gap-2 bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors"
+                      className={`flex items-center justify-center gap-2 ${isDarkMode ? 'bg-green-700 hover:bg-green-800' : 'bg-green-600 hover:bg-green-700'} text-white py-3 px-4 rounded-lg transition-colors`}
                     >
                       <FiExternalLink className="h-5 w-5" />
                       <span>Open in New Tab</span>
@@ -213,7 +246,7 @@ export default function CertificationsPage() {
                     {/* Try Embedded Viewer */}
                     <button
                       onClick={() => setModalView('iframe')}
-                      className="flex items-center justify-center gap-2 bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors"
+                      className={`flex items-center justify-center gap-2 ${isDarkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-600 hover:bg-gray-700'} text-white py-3 px-4 rounded-lg transition-colors`}
                     >
                       <FiEye className="h-5 w-5" />
                       <span>Try Embedded Viewer</span>
@@ -222,13 +255,15 @@ export default function CertificationsPage() {
                   
                   {/* Verification link */}
                   {selectedCert?.verifyLink && (
-                    <div className="mt-4 pt-4 border-t border-gray-200">
-                      <p className="text-gray-600 mb-2">Verify this certification:</p>
+                    <div className={`mt-4 pt-4 border-t ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                      <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} mb-2`}>
+                        Verify this certification:
+                      </p>
                       <a
                         href={selectedCert.verifyLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline inline-flex items-center"
+                        className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} hover:underline inline-flex items-center`}
                       >
                         <FiExternalLink className="mr-1" /> 
                         Verify on {selectedCert.issuer.split(' - ')[0]}
@@ -241,37 +276,37 @@ export default function CertificationsPage() {
                   <div className="flex justify-between items-center mb-4">
                     <button
                       onClick={() => setModalView('options')}
-                      className="text-blue-600 hover:text-blue-800"
+                      className={`${isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'}`}
                     >
                       ← Back to Options
                     </button>
                     <a
                       href={selectedPdf}
                       download
-                      className="text-blue-600 hover:text-blue-800 flex items-center"
+                      className={`${isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'} flex items-center`}
                     >
                       <FiDownload className="mr-1" /> Download
                     </a>
                   </div>
                   
                   {/* iframe PDF viewer with fallback message */}
-                  <div className="border border-gray-300 rounded">
+                  <div className={`border ${isDarkMode ? 'border-gray-700' : 'border-gray-300'} rounded`}>
                     <iframe
                       src={selectedPdf}
                       width="100%"
                       height="480"
-                      className="border-none w-full"
+                      className="border-none w-full bg-white" // Keep PDF iframe background white
                       title={selectedCert?.name}
                       sandbox="allow-same-origin allow-scripts"
                       loading="lazy"
                     >
-                      <p className="p-4 text-center text-gray-600">
+                      <p className={`p-4 text-center ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                         Your browser doesn't support embedded PDFs.
                         <a 
                           href={selectedPdf} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline block mt-2"
+                          className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} hover:underline block mt-2`}
                         >
                           Open the PDF directly instead.
                         </a>
@@ -279,7 +314,7 @@ export default function CertificationsPage() {
                     </iframe>
                   </div>
                   
-                  <p className="text-sm text-gray-500 mt-2">
+                  <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'} mt-2`}>
                     Having trouble? Try the download or "Open in New Tab" options.
                   </p>
                 </div>
