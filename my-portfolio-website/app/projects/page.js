@@ -32,8 +32,8 @@ export default function ProjectsPage() {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="text-center mb-6 md:mb-12"
       >
-        <h1 className="text-2xl md:text-3xl font-bold text-blue-600">GitHub Projects</h1>
-        <p className="mt-2 md:mt-4 text-base md:text-lg text-gray-700">
+        <h1 className="text-2xl md:text-3xl font-bold text-blue-600 dark:text-blue-400">GitHub Projects</h1>
+        <p className="mt-2 md:mt-4 text-base md:text-lg text-gray-700 dark:text-gray-300">
           Search and explore my GitHub projects.
         </p>
       </motion.div>
@@ -42,7 +42,9 @@ export default function ProjectsPage() {
       <input
         type="text"
         placeholder="Search projects..."
-        className="mt-3 w-full md:w-1/2 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
+        className="mt-3 w-full md:w-1/2 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 
+                   text-center bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
+                   border-gray-300 dark:border-gray-700 dark:focus:ring-blue-400"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
@@ -53,19 +55,22 @@ export default function ProjectsPage() {
           filteredRepos.map((repo) => (
             <div
               key={repo.id}
-              className="p-4 md:p-6 bg-white shadow-lg rounded-lg text-center flex flex-col items-center"
+              className="p-4 md:p-6 bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 
+                         rounded-lg text-center flex flex-col items-center 
+                         border border-gray-100 dark:border-gray-700"
             >
-              <h2 className="text-lg md:text-xl font-semibold break-words w-full overflow-hidden">
+              <h2 className="text-lg md:text-xl font-semibold break-words w-full overflow-hidden dark:text-gray-100">
                 {repo.name}
               </h2>
-              <p className="text-sm md:text-base text-gray-600 mt-2 line-clamp-3">
+              <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mt-2 line-clamp-3">
                 {repo.description || "No description available."}
               </p>
               <a
                 href={repo.html_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-blue-500 mt-3 hover:text-blue-700 text-sm md:text-base"
+                className="flex items-center gap-2 text-blue-500 dark:text-blue-400 mt-3 hover:text-blue-700 
+                           dark:hover:text-blue-300 text-sm md:text-base"
               >
                 <FaGithub size={18} />
                 View on GitHub
@@ -73,7 +78,7 @@ export default function ProjectsPage() {
             </div>
           ))
         ) : (
-          <p className="text-gray-500 text-center w-full mt-4">No projects found.</p>
+          <p className="text-gray-500 dark:text-gray-400 text-center w-full mt-4">No projects found.</p>
         )}
       </div>
     </motion.section>
