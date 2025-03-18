@@ -66,7 +66,7 @@ const DescriptionCard = ({ description, isVisible }) => {
 
   return (
     <motion.div
-      className="absolute inset-0 bg-white p-6 flex flex-col"
+      className="absolute inset-0 bg-white dark:bg-gray-800 p-6 flex flex-col"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
@@ -74,7 +74,7 @@ const DescriptionCard = ({ description, isVisible }) => {
     >
       <div 
         ref={descriptionRef}
-        className="overflow-y-auto pr-2 max-h-[280px] md:max-h-[320px] scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent"
+        className="overflow-y-auto pr-2 max-h-[280px] md:max-h-[320px] scrollbar-thin scrollbar-thumb-blue-200 dark:scrollbar-thumb-blue-700 scrollbar-track-transparent"
         onScroll={handleScroll}
       >
         <ul className="list-none space-y-3">
@@ -84,9 +84,9 @@ const DescriptionCard = ({ description, isVisible }) => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="flex items-start space-x-2 text-gray-700"
+              className="flex items-start space-x-2 text-gray-700 dark:text-gray-300"
             >
-              <span className="text-blue-500 mt-1">•</span>
+              <span className="text-blue-500 dark:text-blue-400 mt-1">•</span>
               <span>{point}</span>
             </motion.li>
           ))}
@@ -95,13 +95,13 @@ const DescriptionCard = ({ description, isVisible }) => {
       
       {isOverflowing && (
         <motion.div 
-          className="h-1 bg-blue-100 mt-4 rounded-full overflow-hidden"
+          className="h-1 bg-blue-100 dark:bg-blue-900 mt-4 rounded-full overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
           <motion.div 
-            className="h-full bg-blue-500 rounded-full"
+            className="h-full bg-blue-500 dark:bg-blue-400 rounded-full"
             style={{ width: `${scrollPosition * 100}%` }}
             transition={{ duration: 0.1 }}
           />
@@ -152,7 +152,7 @@ export default function ExperiencePage() {
 
   return (
     <motion.section 
-      className="container mx-auto p-4 md:p-6 min-h-screen"
+      className="container mx-auto p-4 md:p-6 min-h-screen dark:bg-gray-900"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
@@ -163,22 +163,22 @@ export default function ExperiencePage() {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="text-center mb-8 md:mb-16"
       >
-        <h1 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400 mb-4">
           Timeline
         </h1>
-        <p className="text-base md:text-lg text-gray-700">
+        <p className="text-base md:text-lg text-gray-700 dark:text-gray-300">
           A timeline of my professional journey
         </p>
       </motion.div>
 
       <div className="relative">
         <motion.div 
-          className={`absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-1 h-full`}
+          className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-1 h-full"
           initial={{ height: 0 }}
           animate={{ height: "100%" }}
           transition={{ duration: 1, delay: 0.5 }}
         >
-          <div className="h-full bg-gradient-to-b from-blue-200 via-blue-400 to-blue-200 rounded-full" />
+          <div className="h-full bg-gradient-to-b from-blue-200 via-blue-400 to-blue-200 dark:from-blue-900 dark:via-blue-700 dark:to-blue-900 rounded-full" />
         </motion.div>
 
         {experiences.map((exp, index) => (
@@ -201,7 +201,7 @@ export default function ExperiencePage() {
                 onClick={() => isMobile && setHoveredId(hoveredId === exp.id ? null : exp.id)}
               >
                 <motion.div
-                  className="bg-white rounded-lg shadow-lg overflow-hidden"
+                  className="bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-gray-700/30 overflow-hidden"
                   whileHover={!isMobile ? { scale: 1.02 } : {}}
                   transition={{ duration: 0.2 }}
                 >
@@ -215,16 +215,16 @@ export default function ExperiencePage() {
                     >
                       <div className="flex items-center space-x-2">
                         <span className="text-xl md:text-2xl">{exp.icon}</span>
-                        <h2 className="text-lg md:text-xl font-semibold text-gray-900">
+                        <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-gray-100">
                           {exp.title}
                         </h2>
                       </div>
-                      <p className="text-sm text-blue-600 mt-1">{exp.duration}</p>
+                      <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">{exp.duration}</p>
                       <div className="mt-2 flex flex-wrap gap-2">
                         {exp.skills.map((skill, i) => (
                           <span 
                             key={i}
-                            className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-full"
+                            className="text-xs bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-300 px-2 py-1 rounded-full"
                           >
                             {skill}
                           </span>
@@ -247,11 +247,10 @@ export default function ExperiencePage() {
               {/* Center Point */}
               <motion.div 
                 className={`absolute ${isMobile ? 'left-2' : 'left-1/2 transform -translate-x-1/2'}`}
-               
                 transition={{ duration: 0.2 }}
               >
                 <motion.div
-                  className="w-4 h-4 rounded-full bg-blue-600 border-4 border-blue-200 cursor-pointer"
+                  className="w-4 h-4 rounded-full bg-blue-600 dark:bg-blue-500 border-4 border-blue-200 dark:border-blue-900 cursor-pointer"
                   animate={{
                     rotate: hoveredId === exp.id ? 180 : 0,
                     backgroundColor: hoveredId === exp.id ? "#1d4ed8" : "#2563eb"
