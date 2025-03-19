@@ -3,19 +3,18 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FiMenu, FiX } from "react-icons/fi";
-import { FiSun, FiMoon, FiMonitor } from "react-icons/fi";
+import { FiSun, FiMoon } from "react-icons/fi";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [themeMode, setThemeMode] = useState("system");
-  const [themeMenuOpen, setThemeMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
-    // Get initial theme from localStorage or default to system
-    const savedTheme = localStorage.getItem("themeMode") || "system";
-    setThemeMode(savedTheme);
+    // Get initial theme from localStorage or default to light
+    const savedTheme = localStorage.getItem("themeMode") || "light";
+    setIsDarkMode(savedTheme === "dark");
     applyTheme(savedTheme);
 
     const handleScroll = () => {
@@ -25,10 +24,9 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close menus on route change
+  // Close mobile menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
-    setThemeMenuOpen(false);
   }, [pathname]);
 
   // Apply theme changes
@@ -36,25 +34,17 @@ export default function Navbar() {
     const root = document.documentElement;
     if (mode === "dark") {
       root.classList.add("dark");
-    } else if (mode === "light") {
-      root.classList.remove("dark");
     } else {
-      // System preference
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      if (prefersDark) {
-        root.classList.add("dark");
-      } else {
-        root.classList.remove("dark");
-      }
+      root.classList.remove("dark");
     }
   };
 
-  // Handle theme change
-  const changeTheme = (mode) => {
-    setThemeMode(mode);
-    localStorage.setItem("themeMode", mode);
-    applyTheme(mode);
-    setThemeMenuOpen(false);
+  // Toggle theme
+  const toggleTheme = () => {
+    const newMode = isDarkMode ? "light" : "dark";
+    setIsDarkMode(!isDarkMode);
+    localStorage.setItem("themeMode", newMode);
+    applyTheme(newMode);
   };
 
   const navItems = [
@@ -70,24 +60,7 @@ export default function Navbar() {
   const toggleMobileMenu = (e) => {
     e.stopPropagation();
     setIsMobileMenuOpen((prev) => !prev);
-    setThemeMenuOpen(false); // Close theme menu when mobile menu is toggled
   };
-
-  // Toggle theme menu
-  const toggleThemeMenu = (e) => {
-    e.stopPropagation();
-    setThemeMenuOpen((prev) => !prev);
-  };
-
-  // Close menus when clicking outside
-  useEffect(() => {
-    const handleClickOutside = () => {
-      setThemeMenuOpen(false);
-    };
-    
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
 
   return (
     <nav
@@ -123,53 +96,22 @@ export default function Navbar() {
             ))}
           </ul>
 
-          {/* Theme Toggle Button (Desktop) */}
+          {/* Theme Toggle Switch (Desktop) */}
           <div className="relative">
             <button
-              onClick={toggleThemeMenu}
-              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              onClick={toggleTheme}
+              className="flex items-center p-2 bg-gray-100 dark:bg-gray-800 rounded-full w-16 h-8 transition-all duration-300"
               aria-label="Toggle theme"
             >
-              {themeMode === "light" && <FiSun className="text-yellow-500" size={20} />}
-              {themeMode === "dark" && <FiMoon className="text-blue-400" size={20} />}
-              {themeMode === "system" && <FiMonitor className="text-gray-600 dark:text-gray-300" size={20} />}
-            </button>
-
-            {/* Theme Menu Dropdown */}
-            {themeMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    changeTheme("light");
-                  }}
-                  className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <FiSun className="mr-2 text-yellow-500" size={16} />
-                  <span className="dark:text-gray-200">Light</span>
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    changeTheme("dark");
-                  }}
-                  className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <FiMoon className="mr-2 text-blue-400" size={16} />
-                  <span className="dark:text-gray-200">Dark</span>
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    changeTheme("system");
-                  }}
-                  className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <FiMonitor className="mr-2 text-gray-600 dark:text-gray-300" size={16} />
-                  <span className="dark:text-gray-200">System</span>
-                </button>
+              <div className={`absolute top-1 left-1 right-1 bottom-1 flex justify-between items-center px-1 rounded-full`}>
+                <FiSun className="text-yellow-500" size={16} />
+                <FiMoon className="text-blue-400" size={16} />
               </div>
-            )}
+              <div 
+                className={`w-6 h-6 rounded-full bg-white dark:bg-gray-600 shadow-md transform transition-transform duration-300 
+                ${isDarkMode ? 'translate-x-8' : 'translate-x-0'}`}
+              />
+            </button>
           </div>
         </div>
 
@@ -177,13 +119,14 @@ export default function Navbar() {
         <div className="md:hidden flex items-center">
           {/* Theme Toggle Button (Mobile) */}
           <button
-            onClick={toggleThemeMenu}
+            onClick={toggleTheme}
             className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors mr-2"
             aria-label="Toggle theme"
           >
-            {themeMode === "light" && <FiSun className="text-yellow-500" size={20} />}
-            {themeMode === "dark" && <FiMoon className="text-blue-400" size={20} />}
-            {themeMode === "system" && <FiMonitor className="text-gray-600 dark:text-gray-300" size={20} />}
+            {isDarkMode ? 
+              <FiMoon className="text-blue-400" size={20} /> : 
+              <FiSun className="text-yellow-500" size={20} />
+            }
           </button>
 
           {/* Mobile Menu Button */}
@@ -226,74 +169,30 @@ export default function Navbar() {
             </li>
           ))}
 
-          {/* Theme Options in Mobile Menu */}
+          {/* Theme Option in Mobile Menu */}
           <li className="w-full px-6 py-3 border-t border-gray-100 dark:border-gray-800">
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Theme Options</p>
-            <div className="flex space-x-4">
-              <button
-                onClick={() => changeTheme("light")}
-                className={`flex items-center justify-center p-2 rounded ${
-                  themeMode === "light" 
-                    ? "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300" 
-                    : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
-                }`}
-                aria-label="Light mode"
-              >
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Theme</p>
+            <div className="flex items-center">
+              <span className="mr-2 text-gray-600 dark:text-gray-300">
                 <FiSun size={18} />
-              </button>
+              </span>
               <button
-                onClick={() => changeTheme("dark")}
-                className={`flex items-center justify-center p-2 rounded ${
-                  themeMode === "dark" 
-                    ? "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300" 
-                    : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
-                }`}
-                aria-label="Dark mode"
+                onClick={toggleTheme}
+                className="relative w-14 h-7 bg-gray-200 dark:bg-gray-700 rounded-full"
               >
+                <div
+                  className={`absolute top-1 left-1 w-5 h-5 bg-white dark:bg-blue-400 rounded-full transition-transform duration-300 ${
+                    isDarkMode ? "transform translate-x-7" : ""
+                  }`}
+                />
+              </button>
+              <span className="ml-2 text-gray-600 dark:text-gray-300">
                 <FiMoon size={18} />
-              </button>
-              <button
-                onClick={() => changeTheme("system")}
-                className={`flex items-center justify-center p-2 rounded ${
-                  themeMode === "system" 
-                    ? "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300" 
-                    : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
-                }`}
-                aria-label="System mode"
-              >
-                <FiMonitor size={18} />
-              </button>
+              </span>
             </div>
           </li>
         </ul>
       </div>
-
-      {/* Mobile Theme Menu Dropdown */}
-      {themeMenuOpen && (
-        <div className="md:hidden fixed top-16 right-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
-          <button
-            onClick={() => changeTheme("light")}
-            className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <FiSun className="mr-2 text-yellow-500" size={16} />
-            <span className="dark:text-gray-200">Light</span>
-          </button>
-          <button
-            onClick={() => changeTheme("dark")}
-            className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <FiMoon className="mr-2 text-blue-400" size={16} />
-            <span className="dark:text-gray-200">Dark</span>
-          </button>
-          <button
-            onClick={() => changeTheme("system")}
-            className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <FiMonitor className="mr-2 text-gray-600 dark:text-gray-300" size={16} />
-            <span className="dark:text-gray-200">System</span>
-          </button>
-        </div>
-      )}
     </nav>
   );
 }
