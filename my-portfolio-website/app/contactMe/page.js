@@ -50,18 +50,18 @@ export default function ContactMe() {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="text-center mb-8 md:mb-16"
       >
-      <h1 className="text-3xl font-bold text-blue-600">Contact Me</h1>
-      <p className="mt-4 text-lg text-gray-700">Feel free to reach out!</p>
+      <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-400 text-center">Contact Me</h1>
+      <p className="mt-4 text-lg text-gray-700 dark:text-gray-300 text-center">Feel free to reach out!</p>
       </motion.div>
       
-      <form onSubmit={handleSubmit} className="mt-6 max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg">
+      <form onSubmit={handleSubmit} className="mt-6 max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg dark:border-gray-700 bg-white dark:bg-gray-800">
         <input
           type="text"
           name="name"
           value={formData.name}
           onChange={handleChange}
           placeholder="Your Name"
-          className="w-full p-3 border border-gray-300 rounded-lg mb-4"
+          className="w-full p-3 border border-gray-300 rounded-lg mb-4 dark:border-gray-700 bg-white dark:bg-gray-800"
           required
         />
         <input
@@ -70,7 +70,7 @@ export default function ContactMe() {
           value={formData.email}
           onChange={handleChange}
           placeholder="Your Email"
-          className="w-full p-3 border border-gray-300 rounded-lg mb-4"
+          className="w-full p-3 border border-gray-300 rounded-lg mb-4 dark:border-gray-700 bg-white dark:bg-gray-800"
           required
         />
         <textarea
@@ -78,7 +78,7 @@ export default function ContactMe() {
           value={formData.message}
           onChange={handleChange}
           placeholder="Your Message"
-          className="w-full p-3 border border-gray-300 rounded-lg mb-4"
+          className="w-full p-3 border border-gray-300 rounded-lg mb-4 dark:border-gray-700 bg-white dark:bg-gray-800"
           rows={4}
           required
         ></textarea>

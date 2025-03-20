@@ -15,33 +15,6 @@ export default function HomePage() {
     const chatBoxRef = useRef(null);
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState("");
-    const [darkMode, setDarkMode] = useState(false);
-    
-    // Initialize dark mode based on user preference
-    useEffect(() => {
-        // Check for saved preference
-        const savedMode = localStorage.getItem('darkMode');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        // Set initial theme based on saved preference or system preference
-        if (savedMode !== null) {
-            setDarkMode(savedMode === 'true');
-        } else {
-            setDarkMode(prefersDark);
-        }
-    }, []);
-    
-    // Apply dark mode class to document when darkMode state changes
-    useEffect(() => {
-        if (darkMode) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-        
-        // Save the preference
-        localStorage.setItem('darkMode', darkMode);
-    }, [darkMode]);
     
     useEffect(() => {
         if (chatBoxRef.current) {
