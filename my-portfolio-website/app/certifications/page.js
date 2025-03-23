@@ -6,7 +6,16 @@ import { motion } from "framer-motion";
 
 const certifications = [
   {
-    id: 1,
+    id: 9,
+    name: "React Basics",
+    issuer: "IBM - Coursera",
+    date: "March 2025",
+    pdfUrl: "/certifications/React Basics.pdf",
+    verifyLink: "https://www.coursera.org/account/accomplishments/verify/4V5M8RNIVR8P",
+    externalLink: "https://www.coursera.org/learn/react-basics",
+  },
+  {
+    id: 8,
     name: "Introduction to Data Analytics",
     issuer: "IBM - Coursera",
     date: "June 2024",
@@ -15,7 +24,7 @@ const certifications = [
     externalLink: "https://www.coursera.org/learn/introduction-to-data-analytics",
   },
   {
-    id: 2,
+    id: 7,
     name: "Principles of UX/UI Design",
     issuer: "Meta - Coursera",
     date: "November 2023",
@@ -24,7 +33,7 @@ const certifications = [
     externalLink: "https://www.coursera.org/learn/principles-of-ux-ui-design",
   },
   {
-    id: 3,
+    id: 6,
     name: "Create the User Interface in Android Studio",
     issuer: "Meta - Coursera",
     date: "August 2023",
@@ -33,7 +42,25 @@ const certifications = [
     externalLink: "https://www.coursera.org/learn/create-the-user-interface-android-studio",
   },
   {
+    id: 5,
+    name: "Android Application Development with Kotlin",
+    issuer: "SmartInternz",
+    date: "July 2023",
+    pdfUrl: "/certifications/Android Certification.pdf",
+    verifyLink: "https://smartinternz.com/internships/google_developers/dce6203b776215bf767ce88548a82b39",
+    externalLink: "https://skillwallet.smartinternz.com/student-module/vip/259/android-application-developer-kotlin",
+  },
+  {
     id: 4,
+    name: "Google Cloud Computing Foundations Program",
+    issuer: "Google - VIT",
+    date: "July 2023",
+    pdfUrl: "/certifications/React Basics.pdf",
+    verifyLink: "https://drive.google.com/file/d/17Vw4DaDDcjYCfs8jF7ylqr7ElNcHPheV/view",
+    externalLink: "https://www.cloudskillsboost.google/course_templates/153",
+  },
+  {
+    id: 3,
     name: "Programming Fundamentals in Kotlin",
     issuer: "Meta - Coursera",
     date: "June 2023",
@@ -42,7 +69,7 @@ const certifications = [
     externalLink: "https://www.coursera.org/learn/meta-programming-fundamentals-kotlin",
   },
   {
-    id: 5,
+    id: 2,
     name: "Version Control",
     issuer: "Meta - Coursera",
     date: "April 2023",
@@ -51,7 +78,7 @@ const certifications = [
     externalLink: "https://www.coursera.org/learn/introduction-to-version-control",
   },
   {
-    id: 6,
+    id: 1,
     name: "Introduction to Android Mobile Application Development",
     issuer: "Meta - Coursera",
     date: "February 2023",
