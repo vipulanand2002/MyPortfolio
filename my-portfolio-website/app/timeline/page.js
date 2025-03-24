@@ -30,7 +30,20 @@ const experiences = [
     skills: []
   },
   {
-    id: 3,
+    id: 4,
+    title: "SmartInternz - Android Mobile Application Development Internship (Remote)",
+    duration: "2023",
+    description: [
+      "Gained experience in designing user interfaces, managing app lifecycles, and debugging effectively.",
+      "Worked with RESTful APIs for app functionalities.",
+      "Enhanced ability to communicate while coordinating effectively with team members and mentors.",
+      "Created a News App as a final project.",
+    ],
+    icon: "🎓",
+    skills: ["Project Management", "Teamwork"]
+  },
+  {
+    id: 5,
     title: "TresVista Financial Services Pvt. Ltd. (Bengaluru, Karnataka)",
     duration: "2024 - present",
     description: [
